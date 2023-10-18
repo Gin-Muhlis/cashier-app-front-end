@@ -5,10 +5,15 @@ import { SyntheticEvent, useState } from 'react'
 import { BASE_URL } from '../Config/config';
 import { useRouter } from 'next/navigation';
 
-const AddCategory = () => {
+type Category = {
+    id: number;
+    name: string;
+  }
+
+const UpdateCategory = (params: Category) => {
     const [modal, setModal] = useState(false);
     const [isMutataing, setisMutating] = useState(false);
-    const [namaKategori, setNamaKategori] = useState("");
+    const [namaKategori, setNamaKategori] = useState(params.name);
 
     const router = useRouter();
 
@@ -25,7 +30,7 @@ const AddCategory = () => {
             'name': namaKategori
         };
 
-        await axios.post(`${BASE_URL}/category`, data);
+        await axios.patch(`${BASE_URL}/category/${params.id}`, data);
 
         setisMutating(false);
         setNamaKategori("")
@@ -37,11 +42,11 @@ const AddCategory = () => {
 
     return (
         <div>
-            <button className="btn btn-neutral btn-sm mb-5" onClick={handleModal}>Tambah Kategori</button>
+            <button className="btn btn-primary btn-xs" onClick={handleModal}>Edit</button>
             <input type="checkbox" checked={modal} onChange={handleModal} className='modal-toggle' />
             <div className="modal">
                 <div className="modal-box">
-                    <h3 className="font-bold text-lg mb-5">Tambah Kategori</h3>
+                    <h3 className="font-bold text-lg mb-5">Edit Kategori {params.name}</h3>
                     <form onSubmit={handleSubmit}>
                         <div className="form-group">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">Nama Kategori</label>
@@ -63,4 +68,4 @@ const AddCategory = () => {
     )
 }
 
-export default AddCategory;
+export default UpdateCategory;

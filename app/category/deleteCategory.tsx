@@ -5,10 +5,14 @@ import { SyntheticEvent, useState } from 'react'
 import { BASE_URL } from '../Config/config';
 import { useRouter } from 'next/navigation';
 
-const AddCategory = () => {
+type Category = {
+    id: number;
+    name: string;
+  }
+  
+const DeleteCategory = (params: Category) => {
     const [modal, setModal] = useState(false);
     const [isMutataing, setisMutating] = useState(false);
-    const [namaKategori, setNamaKategori] = useState("");
 
     const router = useRouter();
 
@@ -21,14 +25,10 @@ const AddCategory = () => {
 
         setisMutating(true);
 
-        let data = {
-            'name': namaKategori
-        };
-
-        await axios.post(`${BASE_URL}/category`, data);
+        
+        await axios.delete(`${BASE_URL}/category/${params.id}`);
 
         setisMutating(false);
-        setNamaKategori("")
         setModal(false);
 
         router.refresh();
@@ -37,23 +37,20 @@ const AddCategory = () => {
 
     return (
         <div>
-            <button className="btn btn-neutral btn-sm mb-5" onClick={handleModal}>Tambah Kategori</button>
+            <button className="btn btn-error btn-xs" onClick={handleModal}>Hapus</button>
             <input type="checkbox" checked={modal} onChange={handleModal} className='modal-toggle' />
             <div className="modal">
                 <div className="modal-box">
-                    <h3 className="font-bold text-lg mb-5">Tambah Kategori</h3>
+                    <h3 className="font-bold text-lg mb-5">Hapus Kategori {params.name}?</h3>
+                    <p className='mb-5 text-red-600'>Data yang dihapus tidak dapat dikembalikan!</p>
                     <form onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="" className="text-sm font-semibold block mb-2">Nama Kategori</label>
-                            <input type="text" id='nama_kategori' value={namaKategori} onChange={(e) => setNamaKategori(e.target.value)} placeholder='Nama kategori' className='input w-full input-bordered text-sm' />
-                        </div>
                         <div className="modal-action">
                             <button type='button' onClick={handleModal} className="btn btn-sm">Batal</button>
 
                             {isMutataing ? (
-                                <button type='button' className="btn btn-primary btn-sm">Menyimpan...</button>
+                                <button type='button' className="btn btn-primary btn-sm">Menghapus...</button>
                             ) : (
-                                <button type='submit' onClick={handleModal} className="btn btn-primary btn-sm">Simpan</button>
+                                <button type='submit' onClick={handleModal} className="btn btn-primary btn-sm">Hapus</button>
                             )}
                         </div>
                     </form>
@@ -63,4 +60,4 @@ const AddCategory = () => {
     )
 }
 
-export default AddCategory;
+export default DeleteCategory;

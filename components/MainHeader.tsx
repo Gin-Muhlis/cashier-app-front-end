@@ -18,8 +18,8 @@ const MainHeader = () => {
                                     Data Master
                                 </summary>
                                 <ul className="p-2 bg-base-100 text-black">
-                                    <li><Link href="/category">Category</Link></li>
-                                    <li><Link href="/product">Product</Link></li>
+                                    <li><Link href="/category">Kategori</Link></li>
+                                    <li><Link href="/product">Produk</Link></li>
                                 </ul>
                             </details>
                         </li>

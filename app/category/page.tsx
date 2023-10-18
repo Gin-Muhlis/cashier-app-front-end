@@ -2,6 +2,8 @@ import axios from 'axios'
 import React from 'react'
 import { BASE_URL } from '../Config/config'
 import AddCategory from './addCategory';
+import DeleteCategory from './deleteCategory';
+import UpdateCategory from './updateCategory';
 
 
 type Category = {
@@ -19,8 +21,8 @@ const Category = async () => {
   let categories: Category[] = await getCategories();
   
   return (
-    <div className='p-10 bg-gray-200 w-full'>
-      <h1 className='font-bold text-black mb-5'>Kategori</h1>
+    <div className='p-10 bg-gray-200 w-full' style={{ minHeight: '100vh' }}>
+      <h1 className='font-bold text-black mb-5 text-2xl'>Kategori</h1>
       <AddCategory />
       <div className="rounded-md bg-white p-3 w-full">
         <table className="table w-full">
@@ -37,8 +39,8 @@ const Category = async () => {
                   <td>{index + 1}</td>
                   <td>{category.name}</td>
                   <td className='flex items-center justify-center gap-2'>
-                    <button className='btn btn-primary btn-xs'>Edit</button>
-                    <button className='btn btn-warning btn-xs'>Hapus</button>
+                    <UpdateCategory {...category} />
+                    <DeleteCategory {...category} />
                   </td>
                 </tr>
               ))}

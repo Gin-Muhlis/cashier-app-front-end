@@ -78,7 +78,7 @@ const Product = async () => {
                   <td>{product.tag}</td>
                   <td>{product.category.name}</td>
                   <td>
-                    <img src="{product.image}" alt="Gambar Produk" className='w-12 h-12' />
+                    <img src={`${BASE_URL}/${product.image}`} alt="Gambar Produk" className='w-12 h-12' />
                   </td>
                   <td className='flex items-center justify-center gap-2'>
                     <UpdateCategory {...product} />

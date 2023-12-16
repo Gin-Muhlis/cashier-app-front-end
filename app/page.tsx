@@ -1,22 +1,16 @@
-import React from 'react'
+import LoginForm from "./Auth/login";
 
-const styleHero = {
-  height: `calc(100vh - 4rem)`,
-  backgroundImage: `url('/bg-hero.jpg')`,
-  backgroundSize: 'cover',
-  backgroundPosition: 'center'
-}
-
-const home = () => {
+export default function Home() {
   return (
-    <div style={styleHero}>
-      <div className="w-full h-full bg-stone-950/70 flex flex-col items-center justify-center">
-          <span className="text-base mb-2 font-normal text-slate-300">Selamat Datang di</span>
-          <h1 className="text-7xl text-white font-bold italic mb-5">Techno Cafe</h1>
-          <p className='text-lg text-white text-center w-full md:w-1/2'>Lakukan pemesanan makanan yang anda inginkan dengan sangat mudah dan cepat tanpa perlu ribet.</p>
-      </div>  
+    <div className="p-10 min-h-[90vh] flex justify-center items-center">
+      <div className="rounded w-2/5 overflow-hidden">
+        <div className="text-xl text-center font-bold bg-amber-400 p-3 text-white">
+          LOGIN
+        </div>
+        <div className="px-5 py-9 bg-white shadow shadow-md">
+          <LoginForm />
+        </div>
+      </div>
     </div>
-  )
+  );
 }
-
-export default home

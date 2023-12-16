@@ -1,18 +1,16 @@
 import axios from 'axios'
 import React from 'react'
-import { BASE_URL } from '../Config/config'
 import AddCategory from './addCategory';
 import DeleteCategory from './deleteCategory';
 import UpdateCategory from './updateCategory';
-
 
 type Category = {
   id: number;
   name: string;
 }
-
+ 
 const getCategories = async () => {
-  let response = await axios.get(`${BASE_URL}/category`);
+  let response = await axios.get(`http://127.0.0.1:8000/api/categories`);
 
   return response.data.data;
 }

@@ -1,8 +1,7 @@
 'use client'
 import axios from 'axios';
-import React from 'react'
+import React from 'react';
 import { SyntheticEvent, useState } from 'react'
-import { BASE_URL } from '../Config/config';
 import { useRouter } from 'next/navigation';
 
 const AddCategory = () => {
@@ -25,7 +24,7 @@ const AddCategory = () => {
             'name': namaKategori
         };
 
-        await axios.post(`${BASE_URL}/category`, data);
+        await axios.post(`http://127.0.0.1:8000/api/categories`, data);
 
         setisMutating(false);
         setNamaKategori("")

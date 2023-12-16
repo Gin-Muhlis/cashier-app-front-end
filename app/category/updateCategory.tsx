@@ -1,8 +1,7 @@
 'use client'
 import axios from 'axios';
-import React from 'react'
+import React from 'react';
 import { SyntheticEvent, useState } from 'react'
-import { BASE_URL } from '../Config/config';
 import { useRouter } from 'next/navigation';
 
 type Category = {
@@ -30,7 +29,7 @@ const UpdateCategory = (params: Category) => {
             'name': namaKategori
         };
 
-        await axios.patch(`${BASE_URL}/category/${params.id}`, data);
+        await axios.patch(`http://127.0.0.1/api:8000/categories/${params.id}`, data);
 
         setisMutating(false);
         setNamaKategori("")

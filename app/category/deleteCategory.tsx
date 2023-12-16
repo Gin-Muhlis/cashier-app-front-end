@@ -1,8 +1,7 @@
 'use client'
 import axios from 'axios';
-import React from 'react'
+import React from 'react';
 import { SyntheticEvent, useState } from 'react'
-import { BASE_URL } from '../Config/config';
 import { useRouter } from 'next/navigation';
 
 type Category = {
@@ -26,7 +25,7 @@ const DeleteCategory = (params: Category) => {
         setisMutating(true);
 
         
-        await axios.delete(`${BASE_URL}/category/${params.id}`);
+        await axios.delete(`http://127.0.0.1:8000/api/categories/${params.id}`);
 
         setisMutating(false);
         setModal(false);

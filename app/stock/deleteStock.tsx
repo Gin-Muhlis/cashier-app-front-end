@@ -4,15 +4,18 @@ import React from 'react';
 import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
 
-type Category = {
+type Stock = {
     id: number;
-    name: string;
+    amount: number;
+    menu: {
+      id: number,
+      name: string
+    }
   }
-
-const UpdateCategory = (params: Category) => {
+  
+const DeleteStock = (params: Stock) => {
     const [modal, setModal] = useState(false);
     const [isMutataing, setisMutating] = useState(false);
-    const [namaKategori, setNamaKategori] = useState(params.name);
 
     const router = useRouter();
 
@@ -24,15 +27,9 @@ const UpdateCategory = (params: Category) => {
         e.preventDefault();
 
         setisMutating(true);
-
-        let data = {
-            'name': namaKategori
-        };
-
-        await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${params.id}`, data);
+        await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/stocks/${params.id}`);
 
         setisMutating(false);
-        setNamaKategori("")
         setModal(false);
 
         router.refresh();
@@ -41,23 +38,20 @@ const UpdateCategory = (params: Category) => {
 
     return (
         <div>
-            <button className="btn btn-primary btn-xs" onClick={handleModal}>Edit</button>
+            <button className="btn btn-error btn-xs" onClick={handleModal}>Hapus</button>
             <input type="checkbox" checked={modal} onChange={handleModal} className='modal-toggle' />
             <div className="modal">
                 <div className="modal-box">
-                    <h3 className="font-bold text-lg mb-5">Edit Kategori {params.name}</h3>
+                    <h3 className="font-bold text-lg mb-5">Hapus Stok Menu {params.menu.name}?</h3>
+                    <p className='mb-5 text-red-600'>Data yang dihapus tidak dapat dikembalikan!</p>
                     <form onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="" className="text-sm font-semibold block mb-2">Nama Kategori</label>
-                            <input type="text" id='nama_kategori' value={namaKategori} onChange={(e) => setNamaKategori(e.target.value)} placeholder='Nama kategori' className='input w-full input-bordered text-sm' />
-                        </div>
                         <div className="modal-action">
                             <button type='button' onClick={handleModal} className="btn btn-sm">Batal</button>
 
                             {isMutataing ? (
-                                <button type='button' className="btn btn-primary btn-sm">Menyimpan...</button>
+                                <button type='button' className="btn btn-primary btn-sm">Menghapus...</button>
                             ) : (
-                                <button type='submit' onClick={handleModal} className="btn btn-primary btn-sm">Simpan</button>
+                                <button type='submit' onClick={handleModal} className="btn btn-primary btn-sm">Hapus</button>
                             )}
                         </div>
                     </form>
@@ -67,4 +61,4 @@ const UpdateCategory = (params: Category) => {
     )
 }
 
-export default UpdateCategory;
+export default DeleteStock;

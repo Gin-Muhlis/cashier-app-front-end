@@ -8,10 +8,8 @@ import { usePathname } from 'next/navigation';
 import { SIDENAV_ITEMS } from '@/constants';
 import { SideNavItem } from '@/types';
 import { Icon } from '@iconify/react';
-import { useSession } from 'next-auth/react';
 
 const SideNav = () => {
-  const {data: session, status} = useSession();
   return (
     <div className="md:w-60 bg-white h-screen flex-1 fixed border-r border-zinc-200 hidden md:flex">
       <div className="flex flex-col space-y-6 w-full">
@@ -25,9 +23,7 @@ const SideNav = () => {
 
         <div className="flex flex-col space-y-2  md:px-6 ">
           {SIDENAV_ITEMS.map((item, idx) => {
-            if (status === 'authenticated') {
-              return <MenuItem key={idx} item={item} />
-            }
+            return <MenuItem key={idx} item={item} />
           })}
         </div>
       </div>

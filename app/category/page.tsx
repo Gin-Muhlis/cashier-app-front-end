@@ -10,7 +10,7 @@ type Category = {
 }
  
 const getCategories = async () => {
-  let response = await axios.get(`http://127.0.0.1:8000/api/categories`);
+  let response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
 
   return response.data.data;
 }

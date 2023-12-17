@@ -4,15 +4,25 @@ import React from 'react';
 import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
 
-type Category = {
+type Stock = {
     id: number;
-    name: string;
-  }
+    amount: number;
+    menu: {
+        id: number,
+        name: string
+    }
+}
 
-const UpdateCategory = (params: Category) => {
+type Menu = {
+    id: number,
+    name: string
+}
+
+const UpdateType = ({stock, menus}: {stock: Stock, menus: Menu[]}) => {
     const [modal, setModal] = useState(false);
     const [isMutataing, setisMutating] = useState(false);
-    const [namaKategori, setNamaKategori] = useState(params.name);
+    const [amount, setAmount] = useState(stock.amount);
+    const [menuId, setMenuId] = useState(stock.menu.id);
 
     const router = useRouter();
 
@@ -26,13 +36,15 @@ const UpdateCategory = (params: Category) => {
         setisMutating(true);
 
         let data = {
-            'name': namaKategori
+            'amount': amount,
+            'menu_id': menuId
         };
 
-        await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${params.id}`, data);
+        await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/stocks/${stock.id}`, data);
 
         setisMutating(false);
-        setNamaKategori("")
+        setAmount(stock.amount)
+        setMenuId(stock.menu.id)
         setModal(false);
 
         router.refresh();
@@ -45,11 +57,22 @@ const UpdateCategory = (params: Category) => {
             <input type="checkbox" checked={modal} onChange={handleModal} className='modal-toggle' />
             <div className="modal">
                 <div className="modal-box">
-                    <h3 className="font-bold text-lg mb-5">Edit Kategori {params.name}</h3>
+                    <h3 className="font-bold text-lg mb-5">Edit Stok Menu {stock.menu.name}</h3>
                     <form onSubmit={handleSubmit}>
                         <div className="form-group">
-                            <label htmlFor="" className="text-sm font-semibold block mb-2">Nama Kategori</label>
-                            <input type="text" id='nama_kategori' value={namaKategori} onChange={(e) => setNamaKategori(e.target.value)} placeholder='Nama kategori' className='input w-full input-bordered text-sm' />
+                            <label htmlFor="" className="text-sm font-semibold block mb-2">Jumlah Stok</label>
+                            <input type="number" id='nama_kategori' value={amount} onChange={(e) => setAmount(parseInt(e.target.value))} placeholder='Jumlah Stok' className='input w-full input-bordered text-sm' />
+                        </div>
+                        <div className="form-group">
+                            <select className="select select-bordered w-full" onChange={(e) => setMenuId(parseInt(e.target.value))}>
+                                <option disabled selected>Pilih kategori</option>
+                                {menus.map((item, index) => (
+                                    <option
+                                    value={item.id}
+                                    selected={stock.menu.id === item.id}
+                                    key={index}>{item.name}</option>
+                                ))}
+                            </select>
                         </div>
                         <div className="modal-action">
                             <button type='button' onClick={handleModal} className="btn btn-sm">Batal</button>
@@ -67,4 +90,4 @@ const UpdateCategory = (params: Category) => {
     )
 }
 
-export default UpdateCategory;
+export default UpdateType;

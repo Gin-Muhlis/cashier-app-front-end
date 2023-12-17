@@ -25,7 +25,7 @@ const DeleteCategory = (params: Category) => {
         setisMutating(true);
 
         
-        await axios.delete(`http://127.0.0.1:8000/api/categories/${params.id}`);
+        await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/categories/${params.id}`);
 
         setisMutating(false);
         setModal(false);

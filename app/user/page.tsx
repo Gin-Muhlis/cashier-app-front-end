@@ -30,10 +30,10 @@ const Customer = async () => {
             <thead>
               <tr>
                 <th className='text-base'>No</th>
-                <th className='text-base'>Nama Pelanggan</th>
-                <th className='text-base'>Email Pelanggan</th>
-                <th className='text-base'>No Telp Pelanggan</th>
-                <th className='text-base'>Alamat Pelangan</th>
+                <th className='text-base'>Nama User</th>
+                <th className='text-base'>Email User</th>
+                <th className='text-base'>No Telp User</th>
+                <th className='text-base'>Alamat User</th>
                 <th className='text-center text-base'>Aksi</th>
               </tr>
             </thead>

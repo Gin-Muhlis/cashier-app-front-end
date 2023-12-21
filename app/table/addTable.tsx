@@ -54,7 +54,7 @@ const AddTable = () => {
                         </div>
                         <div className="form-group">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">Kapasitas</label>
-                            <input type="number"  value={capacity} onChange={(e) => setCapacity(parseInt(e.target.value))} placeholder='No Meja' className='input w-full input-bordered text-sm' />
+                            <input type="number"  value={capacity} onChange={(e) => setCapacity(parseInt(e.target.value))} placeholder='Kapasitas' className='input w-full input-bordered text-sm' />
                         </div>
                         <div className="form-group">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">Status</label>

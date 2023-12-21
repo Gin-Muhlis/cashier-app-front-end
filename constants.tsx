@@ -43,6 +43,11 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     path: '/user',
     icon: <Icon icon="lucide:user" width="24" height="24" />,
   },
+  {
+    title: 'Transaksi',
+    path: '/transaction',
+    icon: <Icon icon="lucide:baggage-claim" width="24" height="24" />,
+  },
 
 
   // {

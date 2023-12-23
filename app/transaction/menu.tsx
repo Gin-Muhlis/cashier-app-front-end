@@ -1,11 +1,22 @@
 'use client'
 
+import { useState } from "react";
+
 type Menu = {
     id: number;
     name: string;
     price: number;
     image: string;
     description: string;
+}
+
+type orderedMenu = {
+    menu_id: number;
+    name: string;
+    quantity: number;
+    unit_price: number;
+    sub_total: number;
+    image: string;
 }
 
 const handleDescription = (string: string) => {
@@ -25,7 +36,57 @@ const handleFormatPrice = (price: number) => {
 }
 
 
-const Menus = ({ menus, type }: { menus: Menu[], type: string }) => {
+const Menus = ({ menus, type, setOrderedMenus, orderedMenus, setTotal }: { menus: Menu[], type: string, setOrderedMenus: React.Dispatch<React.SetStateAction<orderedMenu[]>>, orderedMenus: orderedMenu[], setTotal: React.Dispatch<React.SetStateAction<number>>}) => {
+
+    const handleChoiceMenus = (
+        menu_id: number,
+        name: string,
+        quantity: number,
+        unit_price: number,
+        image: string
+    ) => {
+        const existingMenu = orderedMenus.find((item) => item.menu_id === menu_id);
+
+        if (existingMenu) {
+
+            const updatedMenus = orderedMenus.map((menu) => {
+                if (menu.menu_id === menu_id) {
+                    setTotal(prev => prev + menu.unit_price)
+                    return {
+                        ...menu,
+                        quantity: menu.quantity + quantity,
+                        sub_total: (menu.quantity + quantity) * menu.unit_price,
+                    }
+                    
+
+                } else {
+                    return menu
+                }
+            });
+
+            setOrderedMenus(updatedMenus);
+        } else {
+
+            const newMenu = {
+                menu_id,
+                name,
+                quantity,
+                unit_price,
+                sub_total: quantity * unit_price,
+                image,
+            };
+
+            setOrderedMenus((prev) => [...prev, newMenu]);
+            setTotal(prev => prev + newMenu.unit_price)
+        
+        }
+
+        return true;
+    };
+
+
+
+
     return (
         <div className='border border-solid'>
             <h2 className='text-black text-2xl font-bold mb-5'>{type} Menu</h2>
@@ -38,7 +99,7 @@ const Menus = ({ menus, type }: { menus: Menu[], type: string }) => {
                             <p className='mb-2 h-16'>{handleDescription(item.description)}</p>
                             <span className='italic text-lg text-amber-400 font-semibold mb-3'>{handleFormatPrice(item.price)}</span>
                             <div className="card-actions justify-end">
-                                <button className="btn btn-sm bg-amber-300 capitalize">Pilih Menu</button>
+                                <button className="btn btn-sm bg-amber-300 capitalize" onClick={() => handleChoiceMenus(item.id, item.name, 1, item.price, item.image)}>Pilih Menu</button>
                             </div>
                         </div>
                     </div>

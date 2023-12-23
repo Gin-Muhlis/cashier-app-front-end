@@ -6,7 +6,9 @@ import Menus from './menu'
 import SelectedMenu from './selectedMenu'
 import PaymentMethods from './paymentMethod'
 import { Icon } from '@iconify/react/dist/iconify.js'
-import ErrorWarning from '../ErrorWarning'
+import ErrorWarning from '../errors'
+import axios from 'axios'
+
 
 type Type = {
     id: number;
@@ -37,6 +39,7 @@ type orderedMenu = {
     quantity: number;
     unit_price: number;
     sub_total: number;
+    image: string
 }
 
 const Content = ({ types, menus, paymentMethods }: { types: Type[], menus: Menu[], paymentMethods: PaymentMethod[] }) => {
@@ -49,6 +52,7 @@ const Content = ({ types, menus, paymentMethods }: { types: Type[], menus: Menu[
     const [filteredMenus, setFilteredMenus] = useState<Menu[]>([])
     const [total, setTotal] = useState(0)
     const [orderedMenus, setOrderedMenus] = useState<orderedMenu[]>([])
+    const [selectedPayment, setSelectedPayment] = useState(0)
 
     useEffect(() => {
         if (searching && selecting) {
@@ -85,17 +89,40 @@ const Content = ({ types, menus, paymentMethods }: { types: Type[], menus: Menu[
         return true
     }
 
+
     const handleShowMenus = () => {
         if (!searching && !selecting)
-            return <Menus menus={menus} type='Semua' />
+            return <Menus menus={menus} type='Semua' setOrderedMenus={setOrderedMenus} orderedMenus={orderedMenus} setTotal={setTotal} />
         if (searching && !selecting)
-            return <Menus menus={searchedMenus} type='Semua' />
+            return <Menus menus={searchedMenus} type='Semua' setOrderedMenus={setOrderedMenus} orderedMenus={orderedMenus} setTotal={setTotal} />
         if (!searching && selecting)
-            return <Menus menus={selectedMenus} type={selectedType} />
+            return <Menus menus={selectedMenus} type={selectedType} setOrderedMenus={setOrderedMenus} orderedMenus={orderedMenus} setTotal={setTotal} />
         if (searching && selecting) 
-            return filteredMenus.length > 0 ? <Menus menus={filteredMenus} type={selectedType} /> : <ErrorWarning message='Menu yang anda cari tidak ditemukan' />
+            return filteredMenus.length > 0 ? <Menus menus={filteredMenus} type={selectedType} setOrderedMenus={setOrderedMenus} orderedMenus={orderedMenus} setTotal={setTotal} /> : <ErrorWarning message='Menu yang anda cari tidak ditemukan' />
         
         return <ErrorWarning message='Menu yang anda cari tidak ditemukan' />
+    }
+
+    const handleFormatPrice = (price: number) => {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(price)
+    }
+
+    const handleTransaction = async () => {
+        const data = {
+            "total_payment": total,
+            "payment_method_id": selectedPayment,
+            "menus": orderedMenus
+        }
+        
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/transactions`, data)
+        setOrderedMenus([])
+        setTotal(0)
+        setSelectedPayment(0)
+        console.log(response)
     }
 
     return (
@@ -113,14 +140,14 @@ const Content = ({ types, menus, paymentMethods }: { types: Type[], menus: Menu[
             </div>
             <div className="md:w-80 w-full flex-1 flex-grow bg-white px-4 pt-7 pb-5 h-[92vh] md:fixed md:top-12 md:right-0">
                 <h2 className='text-black text-xl font-bold mb-8'>Pembayaran</h2>
-                <SelectedMenu orderedMenus={orderedMenus} />
+                <SelectedMenu setTotal={setTotal} orderedMenus={orderedMenus} setOrderedMenus={setOrderedMenus} />
                 <hr className='bg-slate-200 mb-4' />
                 <div className="flex items-center justify-between font-bold mb-5">
                     <span className="text-sm">Total</span>
-                    <span className="text-md">{total}</span>
+                    <span className="text-md">{handleFormatPrice(total)}</span>
                 </div>
-                <PaymentMethods methods={paymentMethods} />
-                <button className="btn btn-sm bg-amber-400 capitalize w-full">Cetak Faktur</button>
+                <PaymentMethods selectedPayment={selectedPayment} setSelectedPayment={setSelectedPayment} methods={paymentMethods} />
+                <button className="btn btn-sm bg-amber-400 capitalize w-full" onClick={handleTransaction}>Cetak Faktur</button>
             </div>
         </div>
     )

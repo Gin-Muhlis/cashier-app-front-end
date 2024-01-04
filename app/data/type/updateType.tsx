@@ -40,7 +40,7 @@ const UpdateType = ({type, categories}: {type: Type, categories: Category[]}) =>
             'category_id': categoryId
         };
 
-        await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/types/${type.id}`, data);
+        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/types/${type.id}`, data);
 
         setisMutating(false);
         setTypeName(type.type_name)

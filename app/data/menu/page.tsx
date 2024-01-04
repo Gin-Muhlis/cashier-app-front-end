@@ -69,7 +69,7 @@ const Type = async () => {
                                 <td>{menu.name}</td>
                                 <td>{menu.price}</td>
                                 <td>
-                                    <img src={menu.image} alt="menu image" width={30} height={30} />
+                                    <img src={menu.image} alt="menu image" width={50} height={50} />
                                 </td>
                                 <td>{menu.type?.name ?? '-'}</td>
                                 <td>{menu.stock?.amount ?? '-'}</td>

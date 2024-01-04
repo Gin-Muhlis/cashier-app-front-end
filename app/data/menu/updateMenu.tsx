@@ -5,7 +5,6 @@ import { SyntheticEvent, useState, ChangeEvent, FormEvent } from 'react'
 import { useRouter } from 'next/navigation';
 
 
-
 type Menu = {
     id: number;
     name: string;
@@ -39,15 +38,15 @@ const UpdateMenu = ({ types, menu }: { types: Type[], menu: Menu }) => {
     const [typeId, setTypeId] = useState(menu.type.id);
 
     const router = useRouter();
-
+ 
     const handleModal = () => {
         setModal(!modal)
     }
 
     const handleChangeImage = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value, files } = e.target;
-        if (files) {
-            setImage(files[0])
+        const value: any = e.target;
+        if (value) {
+            setImage(value.files[0])
         }
     }
 
@@ -57,24 +56,30 @@ const UpdateMenu = ({ types, menu }: { types: Type[], menu: Menu }) => {
         setisMutating(true);
 
         const formData = new FormData();
+        formData.append('_method', 'PUT')
         formData.append('menu_name', name);
         formData.append('price', price.toString());
         formData.append('description', description);
         formData.append('type_id', typeId.toString());
-
         if (image) {
             formData.append('image', image);
         }
-        const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/menus/${menu.id}`, formData);
+        
+        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/menus/${menu.id}`, formData, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'multipart/form-data',
+            }
+        });
 
-        console.log(res)
+        const menuUpdated = res.data.data
 
         setisMutating(false);
-        setName(menu.name)
-        setPrice(menu.price)
+        setName(menuUpdated.name)
+        setPrice(menuUpdated.price)
         setImage(null as File | null)
-        setDescription(menu.description)
-        setTypeId(menu.type.id)
+        setDescription(menuUpdated.description)
+        setTypeId(menuUpdated.type.id)
         setModal(false);
 
         router.refresh();
@@ -89,33 +94,32 @@ const UpdateMenu = ({ types, menu }: { types: Type[], menu: Menu }) => {
                 <div className="modal-box">
                     <h3 className="font-bold text-lg mb-5">Tambah Data Menu</h3>
                     <form onSubmit={handleSubmit} encType='multipart/form-data'>
-                        <div className="form-group">
+                        <div className="form-group mb-3">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">Nama Menu</label>
                             <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Nama Menu' className='input w-full input-bordered text-sm' />
                         </div>
-                        <div className="form-group">
+                        <div className="form-group mb-3">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">Harga</label>
                             <input type="number" value={price} onChange={(e) => setPrice(parseInt(e.target.value))} placeholder='Nama Menu' className='input w-full input-bordered text-sm' />
                         </div>
-                        <div className="form-group">
+                        <div className="form-group mb-3">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">Gambar</label>
                             <input type="file" name="image" onChange={handleChangeImage} className='input w-full input-bordered text-sm' />
                         </div>
-                        <div className="form-group">
+                        <div className="form-group mb-3">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">Tipe Menu</label>
-                            <select className="select select-bordered w-full " onChange={(e) => setTypeId(parseInt(e.target.value))}>
-                                <option disabled selected>Pilih Menu</option>
+                            <select className="select select-bordered w-full" defaultValue={menu.type.id} onChange={(e) => setTypeId(parseInt(e.target.value))}>
+                                <option value={0}>Pilih Tipe Menu</option>
                                 {types.map((item, index) => (
                                     <option
                                         value={item.id}
-                                        selected={item.id == menu.type.id}
                                         key={index}>{item.type_name}</option>
                                 ))}
                             </select>
                         </div>
-                        <div className="form-group">
+                        <div className="form-group mb-3">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">Deskripsi</label>
-                            <textarea className='input w-full input-bordered text-sm' onChange={(e) => setDescription(e.target.value)}>{menu.description}</textarea>
+                            <textarea className='input w-full input-bordered text-sm' onChange={(e) => setDescription(e.target.value)} defaultValue={menu.description}></textarea>
                         </div>
                         <div className="modal-action">
                             <button type='button' onClick={handleModal} className="btn btn-sm">Batal</button>

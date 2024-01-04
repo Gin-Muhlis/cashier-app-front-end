@@ -29,9 +29,9 @@ const AddMenu = ({ types }: { types: Type[] }) => {
     }
 
     const handleChangeImage = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value, files } = e.target;
-        if (files) {
-            setImage(files[0])
+        const value: any = e.target;
+        if (value.files) {
+            setImage(value.files[0])
         }
         console.log(e.target)
     }
@@ -79,22 +79,22 @@ const AddMenu = ({ types }: { types: Type[] }) => {
                 <div className="modal-box">
                     <h3 className="font-bold text-lg mb-5">Tambah Data Menu</h3>
                     <form onSubmit={handleSubmit} encType='multipart/form-data'>
-                        <div className="form-group">
+                        <div className="form-group mb-3">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">Nama Menu</label>
                             <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Nama Menu' className='input w-full input-bordered text-sm' />
                         </div>
-                        <div className="form-group">
+                        <div className="form-group mb-3">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">Harga</label>
                             <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder='Nama Menu' className='input w-full input-bordered text-sm' />
                         </div>
-                        <div className="form-group">
+                        <div className="form-group mb-3">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">Gambar</label>
                             <input type="file" name="image" onChange={handleChangeImage} className='input w-full input-bordered text-sm' />
                         </div>
-                        <div className="form-group">
+                        <div className="form-group mb-3">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">Tipe Menu</label>
                             <select className="select select-bordered w-full " onChange={(e) => setTypeId(e.target.value)}>
-                                <option disabled selected>Pilih Menu</option>
+                                <option>Pilih Type</option>
                                 {types.map((item, index) => (
                                     <option
                                         value={item.id}
@@ -102,7 +102,7 @@ const AddMenu = ({ types }: { types: Type[] }) => {
                                 ))}
                             </select>
                         </div>
-                        <div className="form-group">
+                        <div className="form-group mb-3">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">Deskripsi</label>
                             <textarea className='input w-full input-bordered text-sm' onChange={(e) => setDescription(e.target.value)}></textarea>
                         </div>

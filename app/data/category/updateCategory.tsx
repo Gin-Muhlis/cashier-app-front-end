@@ -29,7 +29,7 @@ const UpdateCategory = (params: Category) => {
             'name': namaKategori
         };
 
-        await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${params.id}`, data);
+        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/categories/${params.id}`, data);
 
         setisMutating(false);
         setNamaKategori("")

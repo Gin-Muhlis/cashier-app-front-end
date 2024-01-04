@@ -26,16 +26,23 @@ const Header = () => {
         <div className="flex items-center space-x-4">
           <Link
             href="/"
-            className="flex flex-row space-x-3 items-center justify-center md:hidden"
+            className="flex flex-row space-x-3 items-center justify-center"
           >
-            <span className="h-7 w-7 bg-zinc-300 rounded-lg" />
-            <span className="font-bold text-xl flex ">Techno Cashier</span>
+            <span className="font-bold text-xl md:hidden">Techno Cashier</span>
           </Link>
         </div>
 
-        <div className="hidden md:block">
-          <div className="p-3 h-8 rounded-full bg-amber-300 flex items-center justify-center text-center">
-            <span className="font-semibold text-sm">Fubuki Shirakami - Admin</span>
+        <div className="flex items-center space-x-3">
+          <div className="hidden md:block">
+            <div className="p-3 h-8 rounded-full bg-amber-300 flex items-center justify-center text-center">
+              <span className="font-semibold text-sm">Fubuki Shirakami - Admin</span>
+            </div>
+          </div>
+
+          <div className="block">
+            <div className="p-3 h-8 rounded bg-amber-300 flex items-center justify-center text-center">
+              <span className="font-semibold text-sm">Login</span>
+            </div>
           </div>
         </div>
       </div>

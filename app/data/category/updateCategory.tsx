@@ -3,6 +3,7 @@ import axios from 'axios';
 import React from 'react';
 import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
+import SweetAlert from '@/app/components/sweatAlert';
 
 type Category = {
     id: number;
@@ -13,6 +14,7 @@ const UpdateCategory = (params: Category) => {
     const [modal, setModal] = useState(false);
     const [isMutataing, setisMutating] = useState(false);
     const [namaKategori, setNamaKategori] = useState(params.name);
+    const [status, setStatus] = useState<any>(null)
 
     const router = useRouter();
 
@@ -29,13 +31,20 @@ const UpdateCategory = (params: Category) => {
             'name': namaKategori
         };
 
-        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/categories/${params.id}`, data);
+      try {
+        const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/categories/${params.id}`, data);
 
         setisMutating(false);
         setNamaKategori("")
         setModal(false);
+        setStatus(res.status)
 
         router.refresh();
+      } catch (error) {
+        console.log(error)
+        setisMutating(false)
+        setStatus(500)
+      }
 
     }
 
@@ -63,6 +72,7 @@ const UpdateCategory = (params: Category) => {
                     </form>
                 </div>
             </div>
+            {status && <SweetAlert status={status} onClose={() => setStatus(null)} />}
         </div>
     )
 }

@@ -8,13 +8,14 @@ import SweetAlert from '@/app/components/sweatAlert';
 type Category = {
     id: number;
     name: string;
-  }
+}
 
 const UpdateCategory = (params: Category) => {
     const [modal, setModal] = useState(false);
     const [isMutataing, setisMutating] = useState(false);
     const [namaKategori, setNamaKategori] = useState(params.name);
     const [status, setStatus] = useState<any>(null)
+    const [message, setMessage] = useState<any>(null)
 
     const router = useRouter();
 
@@ -31,20 +32,22 @@ const UpdateCategory = (params: Category) => {
             'name': namaKategori
         };
 
-      try {
-        const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/categories/${params.id}`, data);
+        try {
+            const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/categories/${params.id}`, data);
 
-        setisMutating(false);
-        setNamaKategori("")
-        setModal(false);
-        setStatus(res.status)
+            setisMutating(false);
+            setNamaKategori(res.data.data?.name)
+            setModal(false);
+            setStatus(res.status)
+            setMessage(res.data.message)
 
-        router.refresh();
-      } catch (error) {
-        console.log(error)
-        setisMutating(false)
-        setStatus(500)
-      }
+            router.refresh();
+        } catch (error: any) {
+            setisMutating(false)
+            setStatus(500)
+            setMessage('Kategori gagal diupdate')
+            router.refresh();
+        }
 
     }
 
@@ -72,7 +75,7 @@ const UpdateCategory = (params: Category) => {
                     </form>
                 </div>
             </div>
-            {status && <SweetAlert status={status} onClose={() => setStatus(null)} />}
+            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
         </div>
     )
 }

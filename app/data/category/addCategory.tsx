@@ -11,6 +11,7 @@ const AddCategory = () => {
     const [isMutataing, setisMutating] = useState(false);
     const [namaKategori, setNamaKategori] = useState("");
     const [status, setStatus] = useState<any>(null);
+    const [message, setMessage] = useState<any>(null);
  
     const router = useRouter();
 
@@ -35,12 +36,14 @@ const AddCategory = () => {
             setModal(false);
             
             setStatus(res.status);
+            setMessage(res.data?.message)
               
             router.refresh();
         } catch (error) {
-            console.error(error);
             setisMutating(false);
             setStatus(500);
+            setMessage('Kategori gagal ditambahkan')
+            router.refresh();
         }
 
     }
@@ -69,7 +72,7 @@ const AddCategory = () => {
                     </form>
                 </div>
             </div>
-      {status && <SweetAlert status={status} onClose={() => setStatus(null)} />}
+      {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
         </div>
         
     )

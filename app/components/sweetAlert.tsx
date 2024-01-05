@@ -2,10 +2,10 @@
 import React, { useEffect } from 'react';
 import Swal from 'sweetalert2';
 
-const SweetAlert = ({ status, onClose }: {status: number, onClose: any}) => {
+const SweetAlert = ({ status, message, onClose }: {status: number, message: string, onClose: any}) => {
   useEffect(() => {
     Swal.fire({
-      title: status === 200 ? 'Berhasil!' : 'Gagal!',
+      html: status === 200 ? `<strong>${message}</strong>` : `<strong>${message}</strong>`,
       icon: status === 200 ? 'success' : 'error',
       showConfirmButton: true,
     }).then(() => {

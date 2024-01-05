@@ -3,6 +3,7 @@ import axios from 'axios';
 import React from 'react';
 import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
+import SweetAlert from '@/app/components/sweatAlert';
 
 type Type = {
     id: number;
@@ -18,11 +19,13 @@ type Category = {
     name: string
 }
 
-const UpdateType = ({type, categories}: {type: Type, categories: Category[]}) => {
+const UpdateType = ({ type, categories }: { type: Type, categories: Category[] }) => {
     const [modal, setModal] = useState(false);
     const [isMutataing, setisMutating] = useState(false);
     const [typeName, setTypeName] = useState(type.type_name);
     const [categoryId, setCategoryId] = useState(type.category.id);
+    const [status, setStatus] = useState<any>(null)
+    const [message, setMessage] = useState<any>(null)
 
     const router = useRouter();
 
@@ -40,14 +43,23 @@ const UpdateType = ({type, categories}: {type: Type, categories: Category[]}) =>
             'category_id': categoryId
         };
 
-        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/types/${type.id}`, data);
+        try {
+            const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/types/${type.id}`, data);
 
-        setisMutating(false);
-        setTypeName(type.type_name)
-        setCategoryId(type.category.id)
-        setModal(false);
+            setisMutating(false);
+            setTypeName(res.data.data?.type_name)
+            setCategoryId(res.data.data?.category.id)
+            setModal(false);
+            setStatus(res.status)
+            setMessage(res.data.message)
 
-        router.refresh();
+            router.refresh();
+        } catch (error) {
+            setisMutating(false)
+            setStatus(500)
+            setMessage('Kategori gagal diupdate')
+            router.refresh();
+        }
 
     }
 
@@ -64,13 +76,12 @@ const UpdateType = ({type, categories}: {type: Type, categories: Category[]}) =>
                             <input type="text" id='nama_kategori' value={typeName} onChange={(e) => setTypeName(e.target.value)} placeholder='Nama Jenis' className='input w-full input-bordered text-sm' />
                         </div>
                         <div className="form-group">
-                            <select className="select select-bordered w-full" onChange={(e) => setCategoryId(parseInt(e.target.value))}>
-                                <option disabled selected>Pilih kategori</option>
+                            <select className="select select-bordered w-full" defaultValue={type.category.id} onChange={(e) => setCategoryId(parseInt(e.target.value))}>
+                                <option disabled value={0}>Pilih kategori</option>
                                 {categories.map((item, index) => (
                                     <option
-                                    value={item.id}
-                                    selected={type.category.id === item.id}
-                                    key={index}>{item.name}</option>
+                                        value={item.id}
+                                        key={index}>{item.name}</option>
                                 ))}
                             </select>
                         </div>
@@ -86,6 +97,7 @@ const UpdateType = ({type, categories}: {type: Type, categories: Category[]}) =>
                     </form>
                 </div>
             </div>
+            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
         </div>
     )
 }

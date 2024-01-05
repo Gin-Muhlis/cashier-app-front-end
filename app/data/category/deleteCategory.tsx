@@ -14,6 +14,7 @@ const DeleteCategory = (params: Category) => {
     const [modal, setModal] = useState(false);
     const [isMutataing, setisMutating] = useState(false);
     const [status, setStatus] = useState<any>(null)
+    const [message, setMessage] = useState<any>(null)
 
     const router = useRouter();
 
@@ -33,13 +34,14 @@ const DeleteCategory = (params: Category) => {
             setisMutating(false);
             setModal(false);
             setStatus(res.status)
-            console.log(res)
+            setMessage(res.data.message)
 
             router.refresh();
         } catch (error) {
             setisMutating(false)
             setStatus(500)
-            console.log(error)
+            setMessage('Kategori gagal dihapus')
+            router.refresh();
         }
 
     }
@@ -65,7 +67,7 @@ const DeleteCategory = (params: Category) => {
                     </form>
                 </div>
             </div>
-            {status && <SweetAlert status={status} onClose={() => setStatus(null)} />}
+            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
         </div>
     )
 }

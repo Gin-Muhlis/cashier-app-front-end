@@ -3,6 +3,7 @@ import axios from 'axios';
 import React from 'react';
 import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
+import SweetAlert from '@/app/components/sweatAlert';
 
 type Category = {
     id: number,
@@ -15,7 +16,9 @@ const AddStock = ({categories}: {categories: Category[]}) => {
     const [isMutataing, setisMutating] = useState(false);
     const [typeName, setTypeName] = useState("");
     const [categoryId, setCategoryId] = useState(0);
-
+    const [status, setStatus] = useState<any>(null);
+    const [message, setMessage] = useState<any>(null);
+ 
 
     const router = useRouter();
 
@@ -33,14 +36,24 @@ const AddStock = ({categories}: {categories: Category[]}) => {
             'category_id': categoryId
         };
 
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/types`, data);
+        try {
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/types`, data);
 
-        setisMutating(false);
-        setTypeName("")
-        setCategoryId(0)
-        setModal(false);
+            setCategoryId(0)
+            setisMutating(false);
+            setTypeName("");
+            setModal(false);
+            
+            setStatus(res.status);
+            setMessage(res.data?.message)
 
         router.refresh();
+        } catch (error) {
+            setisMutating(false);
+            setStatus(500);
+            setMessage('Kategori gagal ditambahkan')
+            router.refresh();
+        }
 
     }
 
@@ -58,8 +71,8 @@ const AddStock = ({categories}: {categories: Category[]}) => {
                         </div>
                         <div className="form-group">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">Kategori</label>
-                            <select className="select select-bordered w-full " onChange={(e) => setCategoryId(parseInt(e.target.value))}>
-                                <option disabled selected>Pilih kategori</option>
+                            <select className="select select-bordered w-full " defaultValue={0} onChange={(e) => setCategoryId(parseInt(e.target.value))}>
+                                <option disabled value={0}>Pilih kategori</option>
                                 {categories.map((item, index) => (
                                     <option
                                     value={item.id}
@@ -79,6 +92,7 @@ const AddStock = ({categories}: {categories: Category[]}) => {
                     </form>
                 </div>
             </div>
+            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
         </div>
     )
 }

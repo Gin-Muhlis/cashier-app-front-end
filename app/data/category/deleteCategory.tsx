@@ -3,7 +3,7 @@ import axios from 'axios';
 import React from 'react';
 import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
-import SweetAlert from '@/app/components/sweatAlert';
+import SweetAlert from '@/app/components/sweetAlert';
 
 type Category = {
     id: number;

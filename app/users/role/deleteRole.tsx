@@ -5,16 +5,16 @@ import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
 import SweetAlert from '@/app/components/sweetAlert';
 
-type Table = {
+type Role = {
     id: number;
-    table_number: number;
+    name: string;
 }
 
-const DeleteTable = (params: Table) => {
+const DeleteRole = (params: Role) => {
     const [modal, setModal] = useState(false);
     const [isMutataing, setisMutating] = useState(false);
-    const [status, setStatus] = useState<any>(null);
-    const [message, setMessage] = useState<any>(null);
+    const [status, setStatus] = useState<any>(null)
+    const [message, setMessage] = useState<any>(null)
 
     const router = useRouter();
 
@@ -29,19 +29,18 @@ const DeleteTable = (params: Table) => {
 
 
         try {
-            const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/tables/${params.id}`);
+            const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/roles/${params.id}`);
 
             setisMutating(false);
             setModal(false);
-
-            setStatus(res.status);
-            setMessage(res.data?.message)
+            setStatus(res.status)
+            setMessage(res.data.message)
 
             router.refresh();
-        } catch (error: any) {
-            setisMutating(false);
-            setStatus(error.status);
-            setMessage('Meja gagal dihapus')
+        } catch (error) {
+            setisMutating(false)
+            setStatus(500)
+            setMessage('Role gagal dihapus')
             router.refresh();
         }
 
@@ -53,7 +52,7 @@ const DeleteTable = (params: Table) => {
             <input type="checkbox" checked={modal} onChange={handleModal} className='modal-toggle' />
             <div className="modal">
                 <div className="modal-box">
-                    <h3 className="font-bold text-lg mb-5">Hapus Meja {params.table_number}?</h3>
+                    <h3 className="font-bold text-lg mb-5">Hapus Role {params.name}?</h3>
                     <p className='mb-5 text-red-600'>Data yang dihapus tidak dapat dikembalikan!</p>
                     <form onSubmit={handleSubmit}>
                         <div className="modal-action">
@@ -73,4 +72,4 @@ const DeleteTable = (params: Table) => {
     )
 }
 
-export default DeleteTable;
+export default DeleteRole;

@@ -3,6 +3,7 @@ import axios from 'axios';
 import React from 'react';
 import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
+import SweetAlert from '@/app/components/sweetAlert';
 
 type Stock = {
     id: number;
@@ -18,11 +19,13 @@ type Menu = {
     name: string
 }
 
-const UpdateType = ({stock, menus}: {stock: Stock, menus: Menu[]}) => {
+const UpdateType = ({ stock, menus }: { stock: Stock, menus: Menu[] }) => {
     const [modal, setModal] = useState(false);
     const [isMutataing, setisMutating] = useState(false);
     const [amount, setAmount] = useState(stock.amount);
     const [menuId, setMenuId] = useState(stock.menu.id);
+    const [status, setStatus] = useState<any>(null);
+    const [message, setMessage] = useState<any>(null);
 
     const router = useRouter();
 
@@ -40,14 +43,24 @@ const UpdateType = ({stock, menus}: {stock: Stock, menus: Menu[]}) => {
             'menu_id': menuId
         };
 
-        await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/stocks/${stock.id}`, data);
+        try {
+            const res = await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/stocks/${stock.id}`, data);
 
-        setisMutating(false);
-        setAmount(stock.amount)
-        setMenuId(stock.menu.id)
-        setModal(false);
+            setisMutating(false);
+            setAmount(stock.amount)
+            setMenuId(stock.menu.id)
+            setModal(false);
 
-        router.refresh();
+            setStatus(res.status);
+            setMessage(res.data?.message)
+
+            router.refresh();
+        } catch (error) {
+            setisMutating(false);
+            setStatus(500);
+            setMessage('Stok gagal ditambahkan')
+            router.refresh();
+        }
 
     }
 
@@ -64,13 +77,13 @@ const UpdateType = ({stock, menus}: {stock: Stock, menus: Menu[]}) => {
                             <input type="number" id='nama_kategori' value={amount} onChange={(e) => setAmount(parseInt(e.target.value))} placeholder='Jumlah Stok' className='input w-full input-bordered text-sm' />
                         </div>
                         <div className="form-group">
-                            <select className="select select-bordered w-full" onChange={(e) => setMenuId(parseInt(e.target.value))}>
-                                <option disabled selected>Pilih kategori</option>
+                            <select className="select select-bordered w-full" defaultValue={stock.menu.id} onChange={(e) => setMenuId(parseInt(e.target.value))}>
+                                <option disabled>Pilih kategori</option>
                                 {menus.map((item, index) => (
                                     <option
-                                    value={item.id}
-                                    selected={stock.menu.id === item.id}
-                                    key={index}>{item.name}</option>
+                                        value={item.id}
+                                       
+                                        key={index}>{item.name}</option>
                                 ))}
                             </select>
                         </div>
@@ -86,6 +99,7 @@ const UpdateType = ({stock, menus}: {stock: Stock, menus: Menu[]}) => {
                     </form>
                 </div>
             </div>
+            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
         </div>
     )
 }

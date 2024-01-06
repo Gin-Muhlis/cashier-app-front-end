@@ -3,15 +3,18 @@ import axios from 'axios';
 import React from 'react';
 import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
+import SweetAlert from '@/app/components/sweetAlert';
 
 type Customer = {
     id: number;
     name: string;
-  }
-  
+}
+
 const DeleteCustomer = (params: Customer) => {
     const [modal, setModal] = useState(false);
     const [isMutataing, setisMutating] = useState(false);
+    const [status, setStatus] = useState<any>(null);
+    const [message, setMessage] = useState<any>(null);
 
     const router = useRouter();
 
@@ -24,13 +27,23 @@ const DeleteCustomer = (params: Customer) => {
 
         setisMutating(true);
 
-        
-        await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/customers/${params.id}`);
 
-        setisMutating(false);
-        setModal(false);
+        try {
+            const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/customers/${params.id}`);
 
-        router.refresh();
+            setisMutating(false);
+            setModal(false);
+
+            setStatus(res.status);
+            setMessage(res.data?.message)
+
+            router.refresh();
+        } catch (error: any) {
+            setisMutating(false);
+            setStatus(error.status);
+            setMessage('Pelanggan gagal dihapus')
+            router.refresh();
+        }
 
     }
 
@@ -55,6 +68,7 @@ const DeleteCustomer = (params: Customer) => {
                     </form>
                 </div>
             </div>
+            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
         </div>
     )
 }

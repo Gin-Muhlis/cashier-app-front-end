@@ -4,23 +4,33 @@ import React from 'react';
 import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
 
-type Customer = {
+type User = {
     id: number;
     name: string;
     email: string;
     phone: string;
     address: string;
-  }
+    role: {
+        id: number,
+        name: string
+    }
+}
 
-const UpdateUser = (params: Customer) => {
+type Role = {
+    id: number,
+    name: string
+}
+
+const UpdateUser = ({ user, roles }: { user: User, roles: Role[] }) => {
     const [modal, setModal] = useState(false);
     const [isMutataing, setisMutating] = useState(false);
-    const [name, setName] = useState(params.name);
-    const [email, setEmail] = useState(params.email);
-    const [phone, setPhone] = useState(params.phone);
-    const [address, setAddress] = useState(params.address);
+    const [name, setName] = useState(user.name);
+    const [email, setEmail] = useState(user.email);
+    const [phone, setPhone] = useState(user.phone);
+    const [address, setAddress] = useState(user.address);
     const [password, setPassword] = useState("");
-    console.log(params)
+    const [roleId, setRoleId] = useState(user.role.id)
+
     const router = useRouter();
 
     const handleModal = () => {
@@ -37,16 +47,17 @@ const UpdateUser = (params: Customer) => {
             'email': email,
             'phone': phone,
             'address': address,
-            'password': password.length < 1 ? null : password
+            'password': password.length < 1 ? null : password,
+            'role_id': roleId
         };
 
-        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/users/${params.id}`, data);
+        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/users/${user.id}`, data);
 
         setisMutating(false);
-        setName(params.name)
-        setEmail(params.email)
-        setPhone(params.phone)
-        setAddress(params.address)
+        setName(user.name)
+        setEmail(user.email)
+        setPhone(user.phone)
+        setAddress(user.address)
         setPassword("")
         setModal(false);
 
@@ -81,6 +92,17 @@ const UpdateUser = (params: Customer) => {
                         <div className="form-group">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">Password</label>
                             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Alamat Pelanggan' className='input w-full input-bordered text-sm' />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="" className="text-sm font-semibold block mb-2">Role</label>
+                            <select className="select select-bordered w-full " defaultValue={roleId} onChange={(e) => setRoleId(parseInt(e.target.value))}>
+                                <option disabled value={0}>Pilih Role</option>
+                                {roles.map((item, index) => (
+                                    <option
+                                        value={item.id}
+                                        key={index}>{item.name}</option>
+                                ))}
+                            </select>
                         </div>
                         <div className="modal-action">
                             <button type='button' onClick={handleModal} className="btn btn-sm">Batal</button>

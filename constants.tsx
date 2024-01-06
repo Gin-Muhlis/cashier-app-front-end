@@ -17,20 +17,9 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
       { title: 'Kategori', path: '/data/category' },
       { title: 'Jenis', path: '/data/type' },
       { title: 'Menu', path: '/data/menu' },
+      { title: 'Stok', path: '/data/stock' },
       { title: 'Pelanggan', path: '/data/customer' },
       { title: 'Meja', path: '/data/table' },
-      { title: 'Stok', path: '/data/stock' },
-    ],
-  },
-  {
-    title: 'App',
-    path: '/apps',
-    icon: <Icon icon="lucide:baggage-claim" width="24" height="24" />,
-    submenu: true,
-    subMenuItems: [
-      { title: 'Pemesanan', path: '/data/menu' },
-      { title: 'Transaksi', path: '/data/category' },
-      
     ],
   },
   {
@@ -39,8 +28,19 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     icon: <Icon icon="lucide:user" width="24" height="24" />,
     submenu: true,
     subMenuItems: [
-      { title: 'User', path: '/data/category' },
-      { title: 'Role', path: '/data/category' },
+      { title: 'User', path: '/users/user' },
+      { title: 'Role', path: '/users/role' },
+    ],
+  },
+  {
+    title: 'App',
+    path: '/applications',
+    icon: <Icon icon="lucide:baggage-claim" width="24" height="24" />,
+    submenu: true,
+    subMenuItems: [
+      { title: 'Pemesanan', path: '/data/menu' },
+      { title: 'Transaksi', path: '/aplications/transaction' },
+      
     ],
   },
   {

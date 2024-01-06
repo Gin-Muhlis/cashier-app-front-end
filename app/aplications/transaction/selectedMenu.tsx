@@ -60,7 +60,7 @@ const SelectedMenu = ({ orderedMenus, setOrderedMenus, setTotal }: { orderedMenu
     }
 
     return (
-        <div className="flex flex-col gap-4 w-full h-2/5 overflow-y-scroll selected-menus pr-2 mb-4">
+        <div className="flex flex-col gap-4 w-full overflow-y-scroll selected-menus pr-2 mb-4">
             {orderedMenus.map((item, index) => (
                 <div key={index} className="flex items-start justify-start gap-2 w-full">
                     <figure><img className="w-12 h-12 bg-amber-300 rounded-sm" src={item.image} alt="image menu" /></figure>

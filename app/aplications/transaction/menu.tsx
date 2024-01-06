@@ -88,11 +88,11 @@ const Menus = ({ menus, type, setOrderedMenus, orderedMenus, setTotal }: { menus
 
 
     return (
-        <div className='border border-solid'>
+        <div>
             <h2 className='text-black text-2xl font-bold mb-5'>{type} Menu</h2>
-            <div className="w-full flex gap-6 md:gap-10 flex-wrap items-start justify-start">
+            <div className="w-full grid md:grid-cols-2 gap-7">
                 {menus.map((item, index) => (
-                    <div key={index} className="card card-compact basis-2/5 bg-base-100 shadow-xl">
+                    <div key={index} className="card card-compact bg-base-100 shadow-xl">
                         <figure className="shadow h-44"><img className="w-full h-full object-cover" src={item.image} alt="Menu Image" /></figure>
                         <div className="card-body">
                             <h2 className="card-title font-bold">{item.name}</h2>

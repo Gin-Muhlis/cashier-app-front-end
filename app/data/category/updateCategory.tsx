@@ -3,7 +3,7 @@ import axios from 'axios';
 import React from 'react';
 import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
-import SweetAlert from '@/app/components/sweatAlert';
+import SweetAlert from '@/app/components/sweetAlert';
 
 type Category = {
     id: number;
@@ -36,7 +36,6 @@ const UpdateCategory = (params: Category) => {
             const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/categories/${params.id}`, data);
 
             setisMutating(false);
-            setNamaKategori(res.data.data?.name)
             setModal(false);
             setStatus(res.status)
             setMessage(res.data.message)

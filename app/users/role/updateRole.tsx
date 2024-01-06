@@ -5,16 +5,17 @@ import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
 import SweetAlert from '@/app/components/sweetAlert';
 
-type Table = {
+type Role = {
     id: number;
-    table_number: number;
+    name: string;
 }
 
-const DeleteTable = (params: Table) => {
+const UpdateRole = (params: Role) => {
     const [modal, setModal] = useState(false);
     const [isMutataing, setisMutating] = useState(false);
-    const [status, setStatus] = useState<any>(null);
-    const [message, setMessage] = useState<any>(null);
+    const [role, setRole] = useState(params.name);
+    const [status, setStatus] = useState<any>(null)
+    const [message, setMessage] = useState<any>(null)
 
     const router = useRouter();
 
@@ -27,21 +28,24 @@ const DeleteTable = (params: Table) => {
 
         setisMutating(true);
 
+        let data = {
+            'name': role
+        };
 
         try {
-            const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/tables/${params.id}`);
+            const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/roles/${params.id}`, data);
 
             setisMutating(false);
+           
             setModal(false);
-
-            setStatus(res.status);
-            setMessage(res.data?.message)
+            setStatus(res.status)
+            setMessage(res.data.message)
 
             router.refresh();
         } catch (error: any) {
-            setisMutating(false);
-            setStatus(error.status);
-            setMessage('Meja gagal dihapus')
+            setisMutating(false)
+            setStatus(500)
+            setMessage('Role gagal diupdate')
             router.refresh();
         }
 
@@ -49,20 +53,23 @@ const DeleteTable = (params: Table) => {
 
     return (
         <div>
-            <button className="btn btn-error btn-xs" onClick={handleModal}>Hapus</button>
+            <button className="btn btn-primary btn-xs" onClick={handleModal}>Edit</button>
             <input type="checkbox" checked={modal} onChange={handleModal} className='modal-toggle' />
             <div className="modal">
                 <div className="modal-box">
-                    <h3 className="font-bold text-lg mb-5">Hapus Meja {params.table_number}?</h3>
-                    <p className='mb-5 text-red-600'>Data yang dihapus tidak dapat dikembalikan!</p>
+                    <h3 className="font-bold text-lg mb-5">Edit Role {params.name}</h3>
                     <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label htmlFor="" className="text-sm font-semibold block mb-2">Nama Role</label>
+                            <input type="text" id='nama_kategori' value={role} onChange={(e) => setRole(e.target.value)} placeholder='Nama Role' className='input w-full input-bordered text-sm' />
+                        </div>
                         <div className="modal-action">
                             <button type='button' onClick={handleModal} className="btn btn-sm">Batal</button>
 
                             {isMutataing ? (
-                                <button type='button' className="btn btn-primary btn-sm">Menghapus...</button>
+                                <button type='button' className="btn btn-primary btn-sm">Menyimpan...</button>
                             ) : (
-                                <button type='submit' onClick={handleModal} className="btn btn-primary btn-sm">Hapus</button>
+                                <button type='submit' onClick={handleModal} className="btn btn-primary btn-sm">Simpan</button>
                             )}
                         </div>
                     </form>
@@ -73,4 +80,4 @@ const DeleteTable = (params: Table) => {
     )
 }
 
-export default DeleteTable;
+export default UpdateRole;

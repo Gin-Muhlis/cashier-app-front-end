@@ -3,6 +3,7 @@ import axios from 'axios';
 import React from 'react';
 import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
+import SweetAlert from '@/app/components/sweetAlert';
 
 type Customer = {
     id: number;
@@ -10,7 +11,7 @@ type Customer = {
     email: string;
     phone: string;
     address: string;
-  }
+}
 
 const UpdateCustomer = (params: Customer) => {
     const [modal, setModal] = useState(false);
@@ -19,7 +20,9 @@ const UpdateCustomer = (params: Customer) => {
     const [email, setEmail] = useState(params.email);
     const [phone, setPhone] = useState(params.phone);
     const [address, setAddress] = useState(params.address);
-    console.log(params)
+    const [status, setStatus] = useState<any>(null);
+    const [message, setMessage] = useState<any>(null);
+
     const router = useRouter();
 
     const handleModal = () => {
@@ -38,16 +41,26 @@ const UpdateCustomer = (params: Customer) => {
             'address': address
         };
 
-        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/customers/${params.id}`, data);
+        try {
+            const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/customers/${params.id}`, data);
 
-        setisMutating(false);
-        setName(params.name)
-        setEmail(params.email)
-        setPhone(params.phone)
-        setAddress(params.address)
-        setModal(false);
+            setisMutating(false);
+            setName(params.name)
+            setEmail(params.email)
+            setPhone(params.phone)
+            setAddress(params.address)
+            setModal(false);
 
-        router.refresh();
+            setStatus(res.status);
+            setMessage(res.data?.message)
+
+            router.refresh();
+        } catch (error: any) {
+            setisMutating(false);
+            setStatus(error.status);
+            setMessage('Pelanggan gagal diupdate')
+            router.refresh();
+        }
 
     }
 
@@ -60,20 +73,20 @@ const UpdateCustomer = (params: Customer) => {
                     <h3 className="font-bold text-lg mb-5">Edit Pelanggan</h3>
                     <form onSubmit={handleSubmit}>
                         <div className="form-group">
-                            <label htmlFor="" className="text-sm font-semibold block mb-2">Nama Pelanggan</label>
-                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Nama Pelanggan' className='input w-full input-bordered text-sm' />
+                            <label htmlFor="" className="text-sm font-semibold block mb-2">Nama</label>
+                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Nama' className='input w-full input-bordered text-sm' />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="" className="text-sm font-semibold block mb-2">Email Pelanggan</label>
-                            <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Email Pelanggan' className='input w-full input-bordered text-sm' />
+                            <label htmlFor="" className="text-sm font-semibold block mb-2">Email</label>
+                            <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Email' className='input w-full input-bordered text-sm' />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="" className="text-sm font-semibold block mb-2">No Telp Pelanggan</label>
-                            <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder='No Telp Pelanggan' className='input w-full input-bordered text-sm' />
+                            <label htmlFor="" className="text-sm font-semibold block mb-2">No Telp</label>
+                            <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder='No Telp' className='input w-full input-bordered text-sm' />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="" className="text-sm font-semibold block mb-2">Alamat Pelanggan</label>
-                            <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder='Alamat Pelanggan' className='input w-full input-bordered text-sm' />
+                            <label htmlFor="" className="text-sm font-semibold block mb-2">Alamat</label>
+                            <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder='Alamat' className='input w-full input-bordered text-sm' />
                         </div>
                         <div className="modal-action">
                             <button type='button' onClick={handleModal} className="btn btn-sm">Batal</button>
@@ -87,6 +100,7 @@ const UpdateCustomer = (params: Customer) => {
                     </form>
                 </div>
             </div>
+            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
         </div>
     )
 }

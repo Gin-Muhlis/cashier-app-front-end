@@ -6,8 +6,9 @@ import Menus from './menu'
 import SelectedMenu from './selectedMenu'
 import PaymentMethods from './paymentMethod'
 import { Icon } from '@iconify/react/dist/iconify.js'
-import ErrorWarning from '../errors'
 import axios from 'axios'
+import ErrorWarning from '@/app/components/errors'
+import { useRouter } from 'next/navigation'
 
 
 type Type = {
@@ -46,6 +47,7 @@ const Content = ({ types, menus, paymentMethods }: { types: Type[], menus: Menu[
     const [searching, setSearching] = useState(false)
     const [selecting, setSelecting] = useState(false)
     const [name, setName] = useState("")
+    const [description, setDescription] = useState("")
     const [searchedMenus, setSearchedMenus] = useState<Menu[]>([])
     const [selectedType, setSelectedType] = useState('Semua')
     const [selectedMenus, setSelectedMenus] = useState<Menu[]>([])
@@ -53,6 +55,7 @@ const Content = ({ types, menus, paymentMethods }: { types: Type[], menus: Menu[
     const [total, setTotal] = useState(0)
     const [orderedMenus, setOrderedMenus] = useState<orderedMenu[]>([])
     const [selectedPayment, setSelectedPayment] = useState(0)
+    const router = useRouter()
 
     useEffect(() => {
         if (searching && selecting) {
@@ -115,22 +118,25 @@ const Content = ({ types, menus, paymentMethods }: { types: Type[], menus: Menu[
         const data = {
             "total_payment": total,
             "payment_method_id": selectedPayment,
+            "description": description,
             "menus": orderedMenus
         }
         
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/transactions`, data)
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/transactions`, data)
         setOrderedMenus([])
         setTotal(0)
         setSelectedPayment(0)
-        console.log(response)
+        setDescription("")
+        
+        router.refresh()
     }
 
     return (
-        <div className='flex flex-wrap-reverse items-start justify-start min-h-full relative'>
-            <div className="p-5 md:basis-[70%]">
-                <div className="flex items-center justify-between gap-2 mb-5">
-                    <h1 className='text-black text-3xl font-bold'>Pilih Kategori</h1>
-                    <div className='w-1/2 h-10 flex items-center justify-start bg-white rounded-lg px-2 py-1'>
+        <div className='flex flex-wrap-reverse gap-5 items-end justify-start'>
+            <div className="p-5 lg:basis-[65%] min-w-96 flex-1 w-full bg-white rounded-md">
+                <div className="flex flex-wrap w-full items-center justify-between gap-2 mb-5">
+                    <h1 className='text-black text-2xl font-bold'>Pilih Kategori</h1>
+                    <div className='md:basis-1/2 h-10 w-full flex items-center justify-start bg-white rounded-lg px-2 py-1'>
                         <input type="text" onChange={handleSearchMenu} placeholder="Cari Menu" className="h-full bg-none outline-none flex-1 text-md" id='input-search-menu' />
                         <Icon icon="iconoir:search" width="24" height="24" className='cursor-pointer' />
                     </div>
@@ -138,15 +144,19 @@ const Content = ({ types, menus, paymentMethods }: { types: Type[], menus: Menu[
                 <Types types={types} selectedType={selectedType} handleSelectType={handleSelectCategory} />
                 {handleShowMenus()}
             </div>
-            <div className="md:w-80 w-full flex-1 flex-grow bg-white px-4 pt-7 pb-5 h-[92vh] md:fixed md:top-12 md:right-0">
-                <h2 className='text-black text-xl font-bold mb-8'>Pembayaran</h2>
+            <div className="lg:basis-[30%] flex-1 bg-white p-5 rounded-md">
+                <h2 className='text-black text-xl font-bold mb-3'>Pembayaran</h2>
                 <SelectedMenu setTotal={setTotal} orderedMenus={orderedMenus} setOrderedMenus={setOrderedMenus} />
                 <hr className='bg-slate-200 mb-4' />
-                <div className="flex items-center justify-between font-bold mb-5">
+                <div className="flex items-center justify-between font-bold mb-5 w-full">
                     <span className="text-sm">Total</span>
                     <span className="text-md">{handleFormatPrice(total)}</span>
                 </div>
                 <PaymentMethods selectedPayment={selectedPayment} setSelectedPayment={setSelectedPayment} methods={paymentMethods} />
+                <div className="mb-4">
+                <h2 className='text-black text-xl font-bold mb-3'>Keterangan</h2>
+                <textarea className='input w-full h-28 rounded p-2 text-sm border border-solid border-amber-200' onChange={(e) => setDescription(e.target.value)} value={description}></textarea>
+                </div>
                 <button className="btn btn-sm bg-amber-400 capitalize w-full" onClick={handleTransaction}>Cetak Faktur</button>
             </div>
         </div>

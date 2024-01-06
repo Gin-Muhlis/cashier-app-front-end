@@ -15,8 +15,8 @@ let styles = {
 const PaymentMethods = ({ methods, setSelectedPayment, selectedPayment }: { methods: PaymentMethod[], setSelectedPayment:  React.Dispatch<React.SetStateAction<number>>, selectedPayment: number }) => {
     return (
         <>
-            <h2 className='text-black text-xl font-bold mb-2'>Metode Pembayaran</h2>
-            <div className="carousel w-full py-2 space-x-4 mb-5">
+            <h2 className='text-black text-xl font-bold mb-3'>Metode Pembayaran</h2>
+            <div className="carousel w-full space-x-4 mb-5">
                 {methods.map((item, index) => (
                     <div key={index} className={selectedPayment == item.id ? styles.selected : styles.default} onClick={() => setSelectedPayment(item.id)}>
                         <img className='w-2/3 h-6' src={item.icon} alt='image payment method' />

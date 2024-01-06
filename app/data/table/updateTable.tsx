@@ -3,7 +3,7 @@ import axios from 'axios';
 import React from 'react';
 import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
-
+import SweetAlert from '@/app/components/sweetAlert';
 
 type Table = {
     id: number;
@@ -17,7 +17,9 @@ const UpdateTable = (params: Table) => {
     const [isMutataing, setisMutating] = useState(false);
     const [noTable, setNoTable] = useState(params.table_number);
     const [capacity, setCapacity] = useState(params.capacity);
-    const [status, setStatus] = useState(params.status);
+    const [tableStatus, setTableStatus] = useState(params.status);
+    const [status, setStatus] = useState<any>(null);
+    const [message, setMessage] = useState<any>(null);
 
     const router = useRouter();
 
@@ -33,18 +35,28 @@ const UpdateTable = (params: Table) => {
         let data = {
             'table_number': noTable,
             'capacity': capacity,
-            'status': status,
+            'status': tableStatus,
         };
 
-        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/tables/${params.id}`, data);
+        try {
+            const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/tables/${params.id}`, data);
 
-        setisMutating(false);
-        setNoTable(params.table_number)
-        setCapacity(params.capacity)
-        setStatus(params.status)
-        setModal(false);
+            setisMutating(false);
+            setNoTable(params.table_number)
+            setCapacity(params.capacity)
+            setTableStatus(params.status)
+            setModal(false);
 
-        router.refresh();
+            setStatus(res.status);
+            setMessage(res.data?.message)
+
+            router.refresh();
+        } catch (error: any) {
+            setisMutating(false);
+            setStatus(error.status);
+            setMessage('Meja gagal dihapus')
+            router.refresh();
+        }
 
     }
 
@@ -66,10 +78,10 @@ const UpdateTable = (params: Table) => {
                         </div>
                         <div className="form-group">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">Status</label>
-                            <select className="select select-bordered w-full " onChange={(e) => setStatus(e.target.value)}>
+                            <select className="select select-bordered w-full " defaultValue={tableStatus} value={tableStatus} onChange={(e) => setTableStatus(e.target.value)}>
                                 <option disabled selected>Pilih Status</option>
-                                <option value="available" selected={params.status == 'available'}>Tersedia</option>
-                                <option value="reserved" selected={params.status == 'reserved'}>Dipesan</option>
+                                <option value="available">Tersedia</option>
+                                <option value="reserved">Dipesan</option>
                             </select>
                         </div>
                         <div className="modal-action">
@@ -84,6 +96,7 @@ const UpdateTable = (params: Table) => {
                     </form>
                 </div>
             </div>
+            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
         </div>
     )
 }

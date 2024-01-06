@@ -3,18 +3,20 @@ import axios from 'axios';
 import React from 'react';
 import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
+import SweetAlert from '@/app/components/sweetAlert';
 
 type Menu = {
     id: number,
     name: string
 }
 
-const AddType = ({menus}: {menus: Menu[]}) => {
+const AddType = ({ menus }: { menus: Menu[] }) => {
     const [modal, setModal] = useState(false);
     const [isMutataing, setisMutating] = useState(false);
     const [amount, setAmount] = useState(0);
     const [menuId, setMenuId] = useState(0);
-
+    const [status, setStatus] = useState<any>(null);
+    const [message, setMessage] = useState<any>(null);
 
     const router = useRouter();
 
@@ -31,15 +33,25 @@ const AddType = ({menus}: {menus: Menu[]}) => {
             'amount': amount,
             'menu_id': menuId
         };
-        console.log(data)
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/stocks`, data);
 
-        setisMutating(false);
-        setAmount(0)
-        setMenuId(0)
-        setModal(false);
+        try {
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/stocks`, data);
 
-        router.refresh();
+            setisMutating(false);
+            setAmount(0)
+            setMenuId(0)
+            setModal(false);
+
+            setStatus(res.status);
+            setMessage(res.data?.message)
+
+            router.refresh();
+        } catch (error) {
+            setisMutating(false);
+            setStatus(500);
+            setMessage('Stok gagal ditambahkan')
+            router.refresh();
+        }
 
     }
 
@@ -57,12 +69,12 @@ const AddType = ({menus}: {menus: Menu[]}) => {
                         </div>
                         <div className="form-group">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">Menu</label>
-                            <select className="select select-bordered w-full " onChange={(e) => setMenuId(parseInt(e.target.value))}>
-                                <option disabled selected>Pilih Menu</option>
+                            <select className="select select-bordered w-full" value={menuId} defaultValue={menuId} onChange={(e) => setMenuId(parseInt(e.target.value))}>
+                                <option disabled value={0}>Pilih Menu</option>
                                 {menus.map((item, index) => (
                                     <option
-                                    value={item.id}
-                                    key={index}>{item.name}</option>
+                                        value={item.id}
+                                        key={index}>{item.name}</option>
                                 ))}
                             </select>
                         </div>
@@ -78,6 +90,7 @@ const AddType = ({menus}: {menus: Menu[]}) => {
                     </form>
                 </div>
             </div>
+            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
         </div>
     )
 }

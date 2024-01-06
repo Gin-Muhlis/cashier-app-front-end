@@ -3,13 +3,16 @@ import axios from 'axios';
 import React from 'react';
 import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
+import SweetAlert from '@/app/components/sweetAlert';
 
 const AddTable = () => {
     const [modal, setModal] = useState(false);
     const [isMutataing, setisMutating] = useState(false);
     const [noTable, setNoTable] = useState(0);
     const [capacity, setCapacity] = useState(0);
-    const [status, setStatus] = useState("available");
+    const [tableStatus, setTableStatus] = useState("available");
+    const [status, setStatus] = useState<any>(null);
+    const [message, setMessage] = useState<any>(null);
 
     const router = useRouter();
 
@@ -25,18 +28,28 @@ const AddTable = () => {
         let data = {
             'table_number': noTable,
             'capacity': capacity,
-            'status': status,
+            'status': tableStatus,
         };
 
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/tables`, data);
+        try {
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/tables`, data);
 
-        setisMutating(false);
-        setNoTable(0)
-        setCapacity(0)
-        setStatus("available")
-        setModal(false);
+            setisMutating(false);
+            setNoTable(0)
+            setCapacity(0)
+            setTableStatus("available")
+            setModal(false);
 
-        router.refresh();
+            setStatus(res.status);
+            setMessage(res.data?.message)
+
+            router.refresh();
+        } catch (error: any) {
+            setisMutating(false);
+            setStatus(error.status);
+            setMessage('Meja gagal ditambahkan')
+            router.refresh();
+        }
 
     }
 
@@ -50,18 +63,18 @@ const AddTable = () => {
                     <form onSubmit={handleSubmit}>
                         <div className="form-group">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">No Meja</label>
-                            <input type="number"  value={noTable} onChange={(e) => setNoTable(parseInt(e.target.value))} placeholder='No Meja' className='input w-full input-bordered text-sm' />
+                            <input type="number" value={noTable} onChange={(e) => setNoTable(parseInt(e.target.value))} placeholder='No Meja' className='input w-full input-bordered text-sm' />
                         </div>
                         <div className="form-group">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">Kapasitas</label>
-                            <input type="number"  value={capacity} onChange={(e) => setCapacity(parseInt(e.target.value))} placeholder='Kapasitas' className='input w-full input-bordered text-sm' />
+                            <input type="number" value={capacity} onChange={(e) => setCapacity(parseInt(e.target.value))} placeholder='Kapasitas' className='input w-full input-bordered text-sm' />
                         </div>
                         <div className="form-group">
                             <label htmlFor="" className="text-sm font-semibold block mb-2">Status</label>
-                            <select className="select select-bordered w-full " onChange={(e) => setStatus(e.target.value)}>
-                                <option disabled selected>Pilih Status</option>
-                               <option value="available">Tersedia</option>
-                               <option value="reserved">Dipesan</option>
+                            <select className="select select-bordered w-full " value={tableStatus} defaultValue={0} onChange={(e) => setTableStatus(e.target.value)}>
+                                <option disabled value={0}>Pilih Status</option>
+                                <option value="available">Tersedia</option>
+                                <option value="reserved">Dipesan</option>
                             </select>
                         </div>
                         <div className="modal-action">
@@ -76,6 +89,7 @@ const AddTable = () => {
                     </form>
                 </div>
             </div>
+            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
         </div>
     )
 }

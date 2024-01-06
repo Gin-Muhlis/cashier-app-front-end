@@ -3,19 +3,22 @@ import axios from 'axios';
 import React from 'react';
 import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
+import SweetAlert from '@/app/components/sweetAlert';
 
 type Stock = {
     id: number;
     amount: number;
     menu: {
-      id: number,
-      name: string
+        id: number,
+        name: string
     }
-  }
-  
+}
+
 const DeleteStock = (params: Stock) => {
     const [modal, setModal] = useState(false);
     const [isMutataing, setisMutating] = useState(false);
+    const [status, setStatus] = useState<any>(null);
+    const [message, setMessage] = useState<any>(null);
 
     const router = useRouter();
 
@@ -27,12 +30,23 @@ const DeleteStock = (params: Stock) => {
         e.preventDefault();
 
         setisMutating(true);
-        await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/stocks/${params.id}`);
 
-        setisMutating(false);
-        setModal(false);
+        try {
+            const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/stocks/${params.id}`);
 
-        router.refresh();
+            setisMutating(false);
+            setModal(false);
+
+            setStatus(res.status);
+            setMessage(res.data?.message)
+
+            router.refresh();
+        } catch (error) {
+            setisMutating(false);
+            setStatus(500);
+            setMessage('Stok gagal dihapus')
+            router.refresh();
+        }
 
     }
 
@@ -57,6 +71,7 @@ const DeleteStock = (params: Stock) => {
                     </form>
                 </div>
             </div>
+            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
         </div>
     )
 }

@@ -38,12 +38,6 @@ const Header = () => {
               <span className="font-semibold text-sm">Fubuki Shirakami - Admin</span>
             </div>
           </div>
-
-          <div className="block">
-            <div className="p-3 h-8 rounded bg-amber-300 flex items-center justify-center text-center">
-              <span className="font-semibold text-sm">Login</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>

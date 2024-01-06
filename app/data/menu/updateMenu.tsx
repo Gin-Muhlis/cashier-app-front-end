@@ -3,7 +3,7 @@ import axios from 'axios';
 import React from 'react';
 import { SyntheticEvent, useState, ChangeEvent, FormEvent } from 'react'
 import { useRouter } from 'next/navigation';
-
+import SweetAlert from '@/app/components/sweetAlert';
 
 type Menu = {
     id: number;
@@ -36,9 +36,11 @@ const UpdateMenu = ({ types, menu }: { types: Type[], menu: Menu }) => {
     const [image, setImage] = useState(null as File | null);
     const [description, setDescription] = useState(menu.description);
     const [typeId, setTypeId] = useState(menu.type.id);
+    const [status, setStatus] = useState<any>(null);
+    const [message, setMessage] = useState<any>(null);
 
     const router = useRouter();
- 
+
     const handleModal = () => {
         setModal(!modal)
     }
@@ -64,31 +66,39 @@ const UpdateMenu = ({ types, menu }: { types: Type[], menu: Menu }) => {
         if (image) {
             formData.append('image', image);
         }
-        
-        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/menus/${menu.id}`, formData, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'multipart/form-data',
-            }
-        });
 
-        const menuUpdated = res.data.data
+        try {
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/menus/${menu.id}`, formData, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'multipart/form-data',
+                }
+            });
 
-        setisMutating(false);
-        setName(menuUpdated.name)
-        setPrice(menuUpdated.price)
-        setImage(null as File | null)
-        setDescription(menuUpdated.description)
-        setTypeId(menuUpdated.type.id)
-        setModal(false);
+            setisMutating(false);
+            setName(menu.name)
+            setPrice(menu.price)
+            setImage(null as File | null)
+            setDescription(menu.description)
+            setTypeId(menu.type.id)
+            setModal(false);
 
-        router.refresh();
+            setStatus(res.status);
+            setMessage(res.data?.message)
+
+            router.refresh();
+        } catch (error: any) {
+            setisMutating(false);
+            setStatus(error.status);
+            setMessage('Menu gagal diupdate')
+            router.refresh();
+        }
 
     }
 
     return (
         <div>
-           <button className="btn btn-primary btn-xs" onClick={handleModal}>Edit</button>
+            <button className="btn btn-primary btn-xs" onClick={handleModal}>Edit</button>
             <input type="checkbox" checked={modal} onChange={handleModal} className='modal-toggle' />
             <div className="modal">
                 <div className="modal-box">
@@ -133,6 +143,7 @@ const UpdateMenu = ({ types, menu }: { types: Type[], menu: Menu }) => {
                     </form>
                 </div>
             </div>
+            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
         </div>
     )
 }

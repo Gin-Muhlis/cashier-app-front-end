@@ -53,7 +53,7 @@ const UpdateTable = (params: Table) => {
             router.refresh();
         } catch (error: any) {
             setisMutating(false);
-            setStatus(error.status);
+            setStatus(error.response.status);
             setMessage('Meja gagal dihapus')
             router.refresh();
         }

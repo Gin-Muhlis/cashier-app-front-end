@@ -43,7 +43,7 @@ const UpdateCategory = (params: Category) => {
             router.refresh();
         } catch (error: any) {
             setisMutating(false)
-            setStatus(500)
+            setStatus(error.response.status)
             setMessage('Kategori gagal diupdate')
             router.refresh();
         }

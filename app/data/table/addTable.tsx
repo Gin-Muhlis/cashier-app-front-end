@@ -46,7 +46,7 @@ const AddTable = () => {
             router.refresh();
         } catch (error: any) {
             setisMutating(false);
-            setStatus(error.status);
+            setStatus(error.response.status);
             setMessage('Meja gagal ditambahkan')
             router.refresh();
         }

@@ -41,9 +41,9 @@ const DeleteStock = (params: Stock) => {
             setMessage(res.data?.message)
 
             router.refresh();
-        } catch (error) {
+        } catch (error: any) {
             setisMutating(false);
-            setStatus(500);
+            setStatus(error.response.status);
             setMessage('Stok gagal dihapus')
             router.refresh();
         }

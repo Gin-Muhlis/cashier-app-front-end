@@ -76,7 +76,7 @@ const AddMenu = ({ types }: { types: Type[] }) => {
             router.refresh();
         } catch (error: any) {
             setisMutating(false);
-            setStatus(error.status);
+            setStatus(error.response.status);
             setMessage('Menu gagal ditambahkan')
             router.refresh();
         }

@@ -3,13 +3,14 @@ import axios from 'axios';
 import React from 'react';
 import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
+import SweetAlert from '@/app/components/sweetAlert';
 
 type Role = {
     id: number,
     name: string
-  }
+}
 
-const AddUser = ({roles}: {roles: Role[]}) => {
+const AddUser = ({ roles }: { roles: Role[] }) => {
     const [modal, setModal] = useState(false);
     const [isMutataing, setisMutating] = useState(false);
     const [name, setName] = useState("");
@@ -18,6 +19,8 @@ const AddUser = ({roles}: {roles: Role[]}) => {
     const [address, setAddress] = useState("");
     const [password, setPassword] = useState("");
     const [role, setRoleId] = useState(0);
+    const [status, setStatus] = useState<any>(null);
+    const [message, setMessage] = useState<any>(null);
 
     const router = useRouter();
 
@@ -39,18 +42,28 @@ const AddUser = ({roles}: {roles: Role[]}) => {
             'role_id': role
         };
 
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users`, data);
+        try {
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users`, data);
 
-        setisMutating(false);
-        setName("")
-        setEmail("")
-        setPhone("")
-        setAddress("")
-        setPassword("")
-        setRoleId(0)
-        setModal(false);
+            setisMutating(false);
+            setName("")
+            setEmail("")
+            setPhone("")
+            setAddress("")
+            setPassword("")
+            setRoleId(0)
+            setModal(false);
 
-        router.refresh();
+            setStatus(res.status);
+            setMessage(res.data?.message)
+
+            router.refresh();
+        } catch (error: any) {
+            setisMutating(false);
+            setStatus(error.response.status);
+            setMessage('Meja gagal ditambahkan')
+            router.refresh();
+        }
 
     }
 
@@ -88,8 +101,8 @@ const AddUser = ({roles}: {roles: Role[]}) => {
                                 <option disabled value={0}>Pilih Role</option>
                                 {roles.map((item, index) => (
                                     <option
-                                    value={item.id}
-                                    key={index}>{item.name}</option>
+                                        value={item.id}
+                                        key={index}>{item.name}</option>
                                 ))}
                             </select>
                         </div>
@@ -105,6 +118,7 @@ const AddUser = ({roles}: {roles: Role[]}) => {
                     </form>
                 </div>
             </div>
+            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
         </div>
     )
 }

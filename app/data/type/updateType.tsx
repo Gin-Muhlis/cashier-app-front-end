@@ -52,9 +52,9 @@ const UpdateType = ({ type, categories }: { type: Type, categories: Category[] }
             setMessage(res.data.message)
 
             router.refresh();
-        } catch (error) {
+        } catch (error: any) {
             setisMutating(false)
-            setStatus(500)
+            setStatus(error.response.status)
             setMessage('Kategori gagal diupdate')
             router.refresh();
         }

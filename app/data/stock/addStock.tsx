@@ -46,9 +46,9 @@ const AddType = ({ menus }: { menus: Menu[] }) => {
             setMessage(res.data?.message)
 
             router.refresh();
-        } catch (error) {
+        } catch (error: any) {
             setisMutating(false);
-            setStatus(500);
+            setStatus(error.response.status);
             setMessage('Stok gagal ditambahkan')
             router.refresh();
         }

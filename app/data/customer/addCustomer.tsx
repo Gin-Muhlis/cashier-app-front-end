@@ -49,7 +49,7 @@ const AddCustomer = () => {
             router.refresh();
         } catch (error: any) {
             setisMutating(false);
-            setStatus(error.status);
+            setStatus(error.response.status);
             setMessage('Pelanggan gagal ditambahkan')
             router.refresh();
         }

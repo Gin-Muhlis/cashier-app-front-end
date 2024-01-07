@@ -41,9 +41,9 @@ const DeleteType = (params: Type) => {
             setMessage(res.data.message)
 
             router.refresh();
-        } catch (error) {
+        } catch (error: any) {
             setisMutating(false)
-            setStatus(500)
+            setStatus(error.response.status)
             setMessage('Kategori gagal dihapus')
             router.refresh();
         }

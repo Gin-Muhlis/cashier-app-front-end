@@ -57,7 +57,7 @@ const UpdateCustomer = (params: Customer) => {
             router.refresh();
         } catch (error: any) {
             setisMutating(false);
-            setStatus(error.status);
+            setStatus(error.response.status);
             setMessage('Pelanggan gagal diupdate')
             router.refresh();
         }

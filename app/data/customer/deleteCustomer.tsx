@@ -40,7 +40,7 @@ const DeleteCustomer = (params: Customer) => {
             router.refresh();
         } catch (error: any) {
             setisMutating(false);
-            setStatus(error.status);
+            setStatus(error.response.status);
             setMessage('Pelanggan gagal dihapus')
             router.refresh();
         }

@@ -38,7 +38,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     icon: <Icon icon="lucide:baggage-claim" width="24" height="24" />,
     submenu: true,
     subMenuItems: [
-      { title: 'Pemesanan', path: '/data/menu' },
+      { title: 'Pemesanan', path: '/aplications/order' },
       { title: 'Transaksi', path: '/aplications/transaction' },
       
     ],

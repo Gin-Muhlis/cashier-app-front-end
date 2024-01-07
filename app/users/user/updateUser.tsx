@@ -3,6 +3,7 @@ import axios from 'axios';
 import React from 'react';
 import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
+import SweetAlert from '@/app/components/sweetAlert';
 
 type User = {
     id: number;
@@ -30,6 +31,8 @@ const UpdateUser = ({ user, roles }: { user: User, roles: Role[] }) => {
     const [address, setAddress] = useState(user.address);
     const [password, setPassword] = useState("");
     const [roleId, setRoleId] = useState(user.role.id)
+    const [status, setStatus] = useState<any>(null);
+    const [message, setMessage] = useState<any>(null);
 
     const router = useRouter();
 
@@ -51,17 +54,27 @@ const UpdateUser = ({ user, roles }: { user: User, roles: Role[] }) => {
             'role_id': roleId
         };
 
-        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/users/${user.id}`, data);
+        try {
+            const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/users/${user.id}`, data);
 
-        setisMutating(false);
-        setName(user.name)
-        setEmail(user.email)
-        setPhone(user.phone)
-        setAddress(user.address)
-        setPassword("")
-        setModal(false);
+            setisMutating(false);
+            setName(user.name)
+            setEmail(user.email)
+            setPhone(user.phone)
+            setAddress(user.address)
+            setPassword("")
+            setModal(false);
 
-        router.refresh();
+            setStatus(res.status);
+            setMessage(res.data?.message)
+
+            router.refresh();
+        } catch (error: any) {
+            setisMutating(false);
+            setStatus(error.response.status);
+            setMessage('Meja gagal ditambahkan')
+            router.refresh();
+        }
 
     }
 
@@ -116,6 +129,7 @@ const UpdateUser = ({ user, roles }: { user: User, roles: Role[] }) => {
                     </form>
                 </div>
             </div>
+            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
         </div>
     )
 }

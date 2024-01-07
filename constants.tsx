@@ -20,6 +20,8 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
       { title: 'Stok', path: '/data/stock' },
       { title: 'Pelanggan', path: '/data/customer' },
       { title: 'Meja', path: '/data/table' },
+      { title: 'List Transaksi', path: '/data/listTransaction' },
+      { title: 'List Transaksi Detail', path: '/data/listDetailTransaction' },
     ],
   },
   {

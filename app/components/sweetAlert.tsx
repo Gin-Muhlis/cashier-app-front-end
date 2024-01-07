@@ -1,4 +1,3 @@
-// components/SweetAlert.js
 import React, { useEffect } from 'react';
 import Swal from 'sweetalert2';
 

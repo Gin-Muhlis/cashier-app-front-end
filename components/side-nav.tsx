@@ -18,7 +18,7 @@ const SideNav = () => {
           className="flex flex-row space-x-3 items-center justify-center md:justify-start md:px-6 border-b border-zinc-200 h-12 w-full"
         >
           <span className="h-7 w-7 bg-amber-300 rounded-lg" />
-          <span className="font-bold text-xl hidden md:flex">Techno Cashier</span>
+          <span className="font-bold text-xl hidden md:flex bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-violet-500">Techno Cashier</span>
         </Link>
 
         <div className="flex flex-col space-y-2  md:px-6 ">

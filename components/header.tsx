@@ -28,7 +28,7 @@ const Header = () => {
             href="/"
             className="flex flex-row space-x-3 items-center justify-center"
           >
-            <span className="font-bold text-xl md:hidden">Techno Cashier</span>
+            <span className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-violet-500 md:hidden">Techno Cashier</span>
           </Link>
         </div>
 

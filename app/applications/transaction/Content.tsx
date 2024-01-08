@@ -9,6 +9,7 @@ import { Icon } from '@iconify/react/dist/iconify.js'
 import axios from 'axios'
 import ErrorWarning from '@/app/components/errors'
 import { useRouter } from 'next/navigation'
+import SweetAlert from '@/app/components/sweetAlert';
 
 
 type Type = {
@@ -55,6 +56,10 @@ const Content = ({ types, menus, paymentMethods }: { types: Type[], menus: Menu[
     const [total, setTotal] = useState(0)
     const [orderedMenus, setOrderedMenus] = useState<orderedMenu[]>([])
     const [selectedPayment, setSelectedPayment] = useState(0)
+    const [isMutataing, setisMutating] = useState(false);
+    const [status, setStatus] = useState<any>(null);
+    const [message, setMessage] = useState<any>(null);
+
     const router = useRouter()
 
     useEffect(() => {
@@ -100,9 +105,9 @@ const Content = ({ types, menus, paymentMethods }: { types: Type[], menus: Menu[
             return <Menus menus={searchedMenus} type='Semua' setOrderedMenus={setOrderedMenus} orderedMenus={orderedMenus} setTotal={setTotal} />
         if (!searching && selecting)
             return <Menus menus={selectedMenus} type={selectedType} setOrderedMenus={setOrderedMenus} orderedMenus={orderedMenus} setTotal={setTotal} />
-        if (searching && selecting) 
+        if (searching && selecting)
             return filteredMenus.length > 0 ? <Menus menus={filteredMenus} type={selectedType} setOrderedMenus={setOrderedMenus} orderedMenus={orderedMenus} setTotal={setTotal} /> : <ErrorWarning message='Menu yang anda cari tidak ditemukan' />
-        
+
         return <ErrorWarning message='Menu yang anda cari tidak ditemukan' />
     }
 
@@ -121,14 +126,27 @@ const Content = ({ types, menus, paymentMethods }: { types: Type[], menus: Menu[
             "description": description,
             "menus": orderedMenus
         }
-        
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/transactions`, data)
-        setOrderedMenus([])
-        setTotal(0)
-        setSelectedPayment(0)
-        setDescription("")
-        
-        router.refresh()
+
+        setisMutating(true);
+
+        try {
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/transactions`, data)
+            setOrderedMenus([])
+            setTotal(0)
+            setSelectedPayment(0)
+            setDescription("")
+            setisMutating(false);
+
+            setStatus(res.status);
+            setMessage(res.data?.message)
+
+            router.refresh()
+        } catch (error: any) {
+            setisMutating(false);
+            setStatus(error.response.status);
+            setMessage('Transaksi gagal ditambahkan')
+            router.refresh();
+        }
     }
 
     return (
@@ -154,11 +172,17 @@ const Content = ({ types, menus, paymentMethods }: { types: Type[], menus: Menu[
                 </div>
                 <PaymentMethods selectedPayment={selectedPayment} setSelectedPayment={setSelectedPayment} methods={paymentMethods} />
                 <div className="mb-4">
-                <h2 className='text-black text-xl font-bold mb-3'>Keterangan</h2>
-                <textarea className='input w-full h-28 rounded p-2 text-sm border border-solid border-amber-200' onChange={(e) => setDescription(e.target.value)} value={description}></textarea>
+                    <h2 className='text-black text-xl font-bold mb-3'>Keterangan</h2>
+                    <textarea className='input w-full h-28 rounded p-2 text-sm border border-solid border-amber-200' onChange={(e) => setDescription(e.target.value)} value={description}></textarea>
                 </div>
-                <button className="btn btn-sm bg-amber-400 capitalize w-full" onClick={handleTransaction}>Cetak Faktur</button>
+
+                {isMutataing ? (
+                    <button type='button' className="btn btn-sm bg-amber-400 capitalize w-full">Menyimpan...</button>
+                ) : (
+                    <button className="btn btn-sm bg-amber-400 capitalize w-full" onClick={handleTransaction}>Cetak Faktur</button>
+                )}
             </div>
+            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
         </div>
     )
 }

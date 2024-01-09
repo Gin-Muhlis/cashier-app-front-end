@@ -51,8 +51,8 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     icon: <Icon icon="lucide:file" width="24" height="24" />,
     submenu: true,
     subMenuItems: [
-      { title: 'Laporan Stok', path: '/data/category' },
-      { title: 'Laporan Transaksi', path: '/data/type' },
+      { title: 'Laporan Stok', path: '/reports/stock' },
+      { title: 'Laporan Transaksi', path: '/reports/transaction' },
     ],
   },
   

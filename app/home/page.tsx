@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useSession } from 'next-auth/react';
 import React from 'react';
 
 type Data = {
@@ -18,16 +19,16 @@ const HomePage = async () => {
 
   const handleFormatPrice = (price: number) => {
     return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        minimumFractionDigits: 0
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0
     }).format(price)
-}
+  }
 
   return (
     <>
       <div className="w-full p-3 rounded-lg bg-amber-300 text-black italic shadow-sm mb-5">
-          <h1 className="text-lg">Selamat Datang <span className="font-bold">Shirakami Fubuki</span></h1>
+        <h1 className="text-lg">Selamat Datang <span className="font-bold">Shirakami Fubuki</span></h1>
       </div>
       <div className="flex items-start justify-start gap-8 flex-wrap">
         <div className="rounded-sm p-3 grow-0 basis-1/4 h-28 bg-cyan-500 flex flex-col justify-center gap-2 shadow-[10px_10px_6px_rgba(6,182,212,0.5)]">

@@ -177,7 +177,7 @@ const Content = ({ types, menus, paymentMethods }: { types: Type[], menus: Menu[
                 </div>
 
                 {isMutataing ? (
-                    <button type='button' className="btn btn-sm bg-amber-400 capitalize w-full">Menyimpan...</button>
+                    <button type='button' disabled className="btn btn-sm bg-amber-400 capitalize w-full">Menyimpan...</button>
                 ) : (
                     <button className="btn btn-sm bg-amber-400 capitalize w-full" onClick={handleTransaction}>Cetak Faktur</button>
                 )}

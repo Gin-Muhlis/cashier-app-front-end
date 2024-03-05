@@ -72,6 +72,8 @@ const Content = ({ types, menus, products, paymentMethods }: { types: Type[], me
 
     const router = useRouter()
 
+    console.log(orderedMenus)
+
     useEffect(() => {
         if (searching && selecting) {
             let data: Menu[] = menus.filter(item => item.name.toLowerCase().includes(name.toLowerCase()) && item.type.name == selectedType)

@@ -36,14 +36,18 @@ const DeleteCategory = (params: Category) => {
             setStatus(res.status)
             setMessage(res.data.message)
 
-            router.refresh();
         } catch (error: any) {
             setisMutating(false)
             setStatus(error.response.status)
             setMessage('Kategori gagal dihapus')
-            router.refresh();
         }
 
+    }
+
+    const resetState = () => {
+        setModal(false);
+        setStatus(false)
+        router.refresh()
     }
 
     return (
@@ -67,7 +71,7 @@ const DeleteCategory = (params: Category) => {
                     </form>
                 </div>
             </div>
-            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
+            {status && <SweetAlert status={status} message={message} resetState={resetState} />}
         </div>
     )
 }

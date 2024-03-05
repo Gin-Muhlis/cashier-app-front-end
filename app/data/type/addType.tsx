@@ -57,6 +57,12 @@ const AddStock = ({categories}: {categories: Category[]}) => {
 
     }
 
+    const resetState = () => {
+        setModal(false);
+        setStatus(false)
+        router.refresh()
+    }
+
     return (
         <div>
             <button className="btn btn-neutral btn-sm mb-5" onClick={handleModal}>Tambah Jenis</button>
@@ -92,7 +98,7 @@ const AddStock = ({categories}: {categories: Category[]}) => {
                     </form>
                 </div>
             </div>
-            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
+            {status && <SweetAlert status={status} message={message} resetState={resetState} />}
         </div>
     )
 }

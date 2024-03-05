@@ -41,10 +41,20 @@ type orderedMenu = {
     quantity: number;
     unit_price: number;
     sub_total: number;
-    image: string
+    image: string | null
 }
 
-const Content = ({ types, menus, paymentMethods }: { types: Type[], menus: Menu[], paymentMethods: PaymentMethod[] }) => {
+type EntrustedProduct = {
+    id: number;
+    product_name: string;
+    supplier_name: string;
+    purchase_price: number;
+    sell_price: number;
+    stock: number;
+    description: string;
+}
+
+const Content = ({ types, menus, products, paymentMethods }: { types: Type[], menus: Menu[], paymentMethods: PaymentMethod[], products: EntrustedProduct[] }) => {
     const [searching, setSearching] = useState(false)
     const [selecting, setSelecting] = useState(false)
     const [name, setName] = useState("")
@@ -100,13 +110,13 @@ const Content = ({ types, menus, paymentMethods }: { types: Type[], menus: Menu[
 
     const handleShowMenus = () => {
         if (!searching && !selecting)
-            return <Menus menus={menus} type='Semua' setOrderedMenus={setOrderedMenus} orderedMenus={orderedMenus} setTotal={setTotal} />
+            return <Menus menus={menus} products={products} type='Semua' setOrderedMenus={setOrderedMenus} orderedMenus={orderedMenus} setTotal={setTotal} />
         if (searching && !selecting)
-            return <Menus menus={searchedMenus} type='Semua' setOrderedMenus={setOrderedMenus} orderedMenus={orderedMenus} setTotal={setTotal} />
+            return <Menus menus={searchedMenus} products={products} type='Semua' setOrderedMenus={setOrderedMenus} orderedMenus={orderedMenus} setTotal={setTotal} />
         if (!searching && selecting)
-            return <Menus menus={selectedMenus} type={selectedType} setOrderedMenus={setOrderedMenus} orderedMenus={orderedMenus} setTotal={setTotal} />
+            return <Menus menus={selectedMenus} products={products} type={selectedType} setOrderedMenus={setOrderedMenus} orderedMenus={orderedMenus} setTotal={setTotal} />
         if (searching && selecting)
-            return filteredMenus.length > 0 ? <Menus menus={filteredMenus} type={selectedType} setOrderedMenus={setOrderedMenus} orderedMenus={orderedMenus} setTotal={setTotal} /> : <ErrorWarning message='Menu yang anda cari tidak ditemukan' />
+            return filteredMenus.length > 0 ? <Menus products={products} menus={filteredMenus} type={selectedType} setOrderedMenus={setOrderedMenus} orderedMenus={orderedMenus} setTotal={setTotal} /> : <ErrorWarning message='Menu yang anda cari tidak ditemukan' />
 
         return <ErrorWarning message='Menu yang anda cari tidak ditemukan' />
     }
@@ -131,6 +141,7 @@ const Content = ({ types, menus, paymentMethods }: { types: Type[], menus: Menu[
 
         try {
             const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/transactions`, data)
+            console.log(res)
             setOrderedMenus([])
             setTotal(0)
             setSelectedPayment(0)
@@ -142,11 +153,17 @@ const Content = ({ types, menus, paymentMethods }: { types: Type[], menus: Menu[
 
             router.refresh()
         } catch (error: any) {
+            console.log(error)
             setisMutating(false);
             setStatus(error.response.status);
             setMessage('Transaksi gagal ditambahkan')
             router.refresh();
         }
+    }
+
+    const resetState = () => {
+        setStatus(false)
+        router.refresh()
     }
 
     return (
@@ -182,7 +199,7 @@ const Content = ({ types, menus, paymentMethods }: { types: Type[], menus: Menu[
                     <button className="btn btn-sm bg-amber-400 capitalize w-full" onClick={handleTransaction}>Cetak Faktur</button>
                 )}
             </div>
-            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
+            {status && <SweetAlert status={status} message={message} resetState={resetState} />}
         </div>
     )
 }

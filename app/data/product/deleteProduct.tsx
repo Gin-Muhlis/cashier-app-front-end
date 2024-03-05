@@ -5,20 +5,25 @@ import { SyntheticEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
 import SweetAlert from '@/app/components/sweetAlert';
 
-type Type = {
+type EntrustedProduct = {
     id: number;
-    type_name: string;
-    category: {
-        id: number,
-        name: string
+    product_name: string;
+}
+
+const deleteProduct = async (id: number) => {
+    try {
+        const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/entrusted-products/${id}`);
+        return res
+    } catch (error: any) {
+        return error.response
     }
 }
 
-const DeleteType = (params: Type) => {
+const DeleteProduct = (params: EntrustedProduct) => {
     const [modal, setModal] = useState(false);
     const [isMutataing, setisMutating] = useState(false);
-    const [status, setStatus] = useState<any>(null);
-    const [message, setMessage] = useState<any>(null);
+    const [status, setStatus] = useState<any>(null)
+    const [message, setMessage] = useState<any>(null)
 
     const router = useRouter();
 
@@ -31,38 +36,32 @@ const DeleteType = (params: Type) => {
 
         setisMutating(true);
 
-        try {
-            const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/types/${params.id}`);
+        const response = await deleteProduct(params.id)
+        setStatus(response.status)
 
+        if (response.status == 200) {
             setisMutating(false);
-            setModal(false);
-
-            setStatus(res.status)
-            setMessage(res.data.message)
-
-            router.refresh();
-        } catch (error: any) {
+            setMessage(response.data.message)
+        } else {
             setisMutating(false)
-            setStatus(error.response.status)
-            setMessage('Kategori gagal dihapus')
-            router.refresh();
+            setMessage('Produk titipan gagal dihapus')
         }
 
     }
 
     const resetState = () => {
-        setModal(false);
+        setModal(false)
         setStatus(false)
-        router.refresh()
+        location.reload()
     }
 
     return (
         <div>
-            <button className="btn btn-error btn-xs" onClick={handleModal}>Hapus</button>
+            <button className="btn btn-error capitalize text-white btn-xs" onClick={handleModal}>Hapus</button>
             <input type="checkbox" checked={modal} onChange={handleModal} className='modal-toggle' />
             <div className="modal">
                 <div className="modal-box">
-                    <h3 className="font-bold text-lg mb-5">Hapus Jenis {params.type_name}?</h3>
+                    <h3 className="font-bold text-lg mb-5">Hapus Produk Titipan {params.product_name}?</h3>
                     <p className='mb-5 text-red-600'>Data yang dihapus tidak dapat dikembalikan!</p>
                     <form onSubmit={handleSubmit}>
                         <div className="modal-action">
@@ -82,4 +81,4 @@ const DeleteType = (params: Type) => {
     )
 }
 
-export default DeleteType;
+export default DeleteProduct;

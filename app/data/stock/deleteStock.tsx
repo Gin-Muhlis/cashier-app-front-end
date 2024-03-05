@@ -50,6 +50,12 @@ const DeleteStock = (params: Stock) => {
 
     }
 
+    const resetState = () => {
+        setModal(false);
+        setStatus(false)
+        router.refresh()
+    }
+
     return (
         <div>
             <button className="btn btn-error btn-xs" onClick={handleModal}>Hapus</button>
@@ -71,7 +77,7 @@ const DeleteStock = (params: Stock) => {
                     </form>
                 </div>
             </div>
-            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
+            {status && <SweetAlert status={status} message={message} resetState={resetState} />}
         </div>
     )
 }

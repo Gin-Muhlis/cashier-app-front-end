@@ -61,6 +61,12 @@ const UpdateType = ({ type, categories }: { type: Type, categories: Category[] }
 
     }
 
+    const resetState = () => {
+        setModal(false);
+        setStatus(false)
+        router.refresh()
+    }
+
     return (
         <div>
             <button className="btn btn-primary btn-xs" onClick={handleModal}>Edit</button>
@@ -95,7 +101,7 @@ const UpdateType = ({ type, categories }: { type: Type, categories: Category[] }
                     </form>
                 </div>
             </div>
-            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
+            {status && <SweetAlert status={status} message={message} resetState={resetState} />}
         </div>
     )
 }

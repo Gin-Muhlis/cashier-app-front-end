@@ -45,6 +45,12 @@ const DeleteMenu = (params: Menu) => {
 
     }
 
+    const resetState = () => {
+        setModal(false);
+        setStatus(false)
+        router.refresh()
+    }
+
     return (
         <div>
             <button className="btn btn-error btn-xs" onClick={handleModal}>Hapus</button>
@@ -66,7 +72,7 @@ const DeleteMenu = (params: Menu) => {
                     </form>
                 </div>
             </div>
-            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
+            {status && <SweetAlert status={status} message={message} resetState={resetState} />}
         </div>
     )
 }

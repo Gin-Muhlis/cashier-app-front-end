@@ -1,18 +1,20 @@
+
 import React, { useEffect } from 'react';
 import Swal from 'sweetalert2';
 
-const SweetAlert = ({ status, message, onClose }: {status: number, message: string, onClose: any}) => {
+const SweetAlert = ({ status, message, resetState }: {status: number, message: string, resetState: any}) => {
+
   useEffect(() => {
     Swal.fire({
       html: status === 200 ? `<strong>${message}</strong>` : `<strong>${message}</strong>`,
       icon: status === 200 ? 'success' : 'error',
       showConfirmButton: true,
-    }).then(() => {
-      if (onClose) {
-        onClose();
+    }).then((result) => {
+      if (result.isConfirmed) {
+        resetState();
       }
     });
-  }, [status, onClose]);
+  }, [status]);
 
   return null;
 };

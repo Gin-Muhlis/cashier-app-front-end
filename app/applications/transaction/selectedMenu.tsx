@@ -7,7 +7,7 @@ type orderedMenu = {
     quantity: number;
     unit_price: number;
     sub_total: number;
-    image: string;
+    image: string | null;
 }
 
 const SelectedMenu = ({ orderedMenus, setOrderedMenus, setTotal }: { orderedMenus: orderedMenu[], setOrderedMenus: React.Dispatch<React.SetStateAction<orderedMenu[]>>, setTotal: React.Dispatch<React.SetStateAction<number>> }) => {
@@ -63,7 +63,7 @@ const SelectedMenu = ({ orderedMenus, setOrderedMenus, setTotal }: { orderedMenu
         <div className="flex flex-col gap-4 w-full overflow-y-scroll selected-menus pr-2 mb-4">
             {orderedMenus.map((item, index) => (
                 <div key={index} className="flex items-start justify-start gap-2 w-full">
-                    <figure><img className="w-12 h-12 bg-amber-300 rounded-sm" src={item.image} alt="image menu" /></figure>
+                    <figure><img className="w-12 h-12 bg-amber-300 rounded-sm" src={item.image?.toString()} alt="image menu" /></figure>
                     <div className='flex-1'>
                         <h4 className='text-md font-bold'>{item.name}</h4>
                         <div className="flex items-center justify-between w-full text-md">

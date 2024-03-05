@@ -96,6 +96,12 @@ const UpdateMenu = ({ types, menu }: { types: Type[], menu: Menu }) => {
 
     }
 
+    const resetState = () => {
+        setModal(false);
+        setStatus(false)
+        router.refresh()
+    }
+
     return (
         <div>
             <button className="btn btn-primary btn-xs" onClick={handleModal}>Edit</button>
@@ -143,7 +149,7 @@ const UpdateMenu = ({ types, menu }: { types: Type[], menu: Menu }) => {
                     </form>
                 </div>
             </div>
-            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
+            {status && <SweetAlert status={status} message={message} resetState={resetState} />}
         </div>
     )
 }

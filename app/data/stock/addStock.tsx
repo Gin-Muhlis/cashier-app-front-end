@@ -55,6 +55,12 @@ const AddType = ({ menus }: { menus: Menu[] }) => {
 
     }
 
+    const resetState = () => {
+        setModal(false);
+        setStatus(false)
+        router.refresh()
+    }
+
     return (
         <div>
             <button className="btn btn-neutral btn-sm mb-5" onClick={handleModal}>Tambah Stok</button>
@@ -90,7 +96,7 @@ const AddType = ({ menus }: { menus: Menu[] }) => {
                     </form>
                 </div>
             </div>
-            {status && <SweetAlert status={status} message={message} onClose={() => setStatus(null)} />}
+            {status && <SweetAlert status={status} message={message} resetState={resetState} />}
         </div>
     )
 }

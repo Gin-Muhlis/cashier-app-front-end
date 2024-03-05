@@ -17,6 +17,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
       { title: 'Kategori', path: '/data/category' },
       { title: 'Jenis', path: '/data/type' },
       { title: 'Menu', path: '/data/menu' },
+      { title: 'Produk Titipan', path: '/data/product' },
       { title: 'Stok', path: '/data/stock' },
       { title: 'Pelanggan', path: '/data/customer' },
       { title: 'Meja', path: '/data/table' },

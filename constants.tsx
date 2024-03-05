@@ -55,5 +55,10 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
       { title: 'Laporan Transaksi', path: '/reports/transaction' },
     ],
   },
+  {
+    title: 'Tentang',
+    path: '/about',
+    icon: <Icon icon="lucide:globe" width="24" height="24" />,
+  },
   
 ];
